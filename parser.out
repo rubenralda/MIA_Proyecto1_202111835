@@ -1,0 +1,656 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> comandos
+Rule 1     comandos -> comando_mkdisk
+Rule 2     comandos -> comando_execute
+Rule 3     comandos -> comando_rep
+Rule 4     comandos -> empty_production
+Rule 5     comandos -> comando_fdisk
+Rule 6     empty_production -> <empty>
+Rule 7     comando_mkdisk -> MKDISK lista_mkdisk
+Rule 8     lista_mkdisk -> lista_mkdisk parametros_mkdisk
+Rule 9     lista_mkdisk -> parametros_mkdisk
+Rule 10    parametros_mkdisk -> param_size
+Rule 11    parametros_mkdisk -> param_unit
+Rule 12    parametros_mkdisk -> param_path
+Rule 13    parametros_mkdisk -> param_fit
+Rule 14    comando_execute -> EXECUTE lista_execute
+Rule 15    lista_execute -> lista_execute parametros_execute
+Rule 16    lista_execute -> parametros_execute
+Rule 17    parametros_execute -> param_path
+Rule 18    comando_rep -> REP
+Rule 19    comando_fdisk -> FDISK lista_fdisk
+Rule 20    lista_fdisk -> lista_fdisk parametros_fdisk
+Rule 21    lista_fdisk -> parametros_fdisk
+Rule 22    parametros_fdisk -> param_size
+Rule 23    parametros_fdisk -> param_unit
+Rule 24    parametros_fdisk -> param_path
+Rule 25    parametros_fdisk -> param_name
+Rule 26    parametros_fdisk -> param_type
+Rule 27    param_size -> MAYOR_QUE SIZE IGUAL ENTERO
+Rule 28    param_path -> MAYOR_QUE PATH IGUAL CADENA
+Rule 29    param_path -> MAYOR_QUE PATH IGUAL ID
+Rule 30    param_unit -> MAYOR_QUE UNIT IGUAL CADENA
+Rule 31    param_unit -> MAYOR_QUE UNIT IGUAL ID
+Rule 32    param_name -> MAYOR_QUE NAME IGUAL CADENA
+Rule 33    param_name -> MAYOR_QUE NAME IGUAL ID
+Rule 34    param_fit -> MAYOR_QUE FIT IGUAL CADENA
+Rule 35    param_fit -> MAYOR_QUE FIT IGUAL ID
+Rule 36    param_type -> MAYOR_QUE TYPE IGUAL CADENA
+Rule 37    param_type -> MAYOR_QUE TYPE IGUAL ID
+
+Terminals, with rules where they appear
+
+CADENA               : 28 30 32 34 36
+ENTERO               : 27
+EXECUTE              : 14
+FDISK                : 19
+FIT                  : 34 35
+ID                   : 29 31 33 35 37
+IGUAL                : 27 28 29 30 31 32 33 34 35 36 37
+MAYOR_QUE            : 27 28 29 30 31 32 33 34 35 36 37
+MKDISK               : 7
+NAME                 : 32 33
+PATH                 : 28 29
+REP                  : 18
+SIZE                 : 27
+TYPE                 : 36 37
+UNIT                 : 30 31
+error                : 
+
+Nonterminals, with rules where they appear
+
+comando_execute      : 2
+comando_fdisk        : 5
+comando_mkdisk       : 1
+comando_rep          : 3
+comandos             : 0
+empty_production     : 4
+lista_execute        : 14 15
+lista_fdisk          : 19 20
+lista_mkdisk         : 7 8
+param_fit            : 13
+param_name           : 25
+param_path           : 12 17 24
+param_size           : 10 22
+param_type           : 26
+param_unit           : 11 23
+parametros_execute   : 15 16
+parametros_fdisk     : 20 21
+parametros_mkdisk    : 8 9
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . comandos
+    (1) comandos -> . comando_mkdisk
+    (2) comandos -> . comando_execute
+    (3) comandos -> . comando_rep
+    (4) comandos -> . empty_production
+    (5) comandos -> . comando_fdisk
+    (7) comando_mkdisk -> . MKDISK lista_mkdisk
+    (14) comando_execute -> . EXECUTE lista_execute
+    (18) comando_rep -> . REP
+    (6) empty_production -> .
+    (19) comando_fdisk -> . FDISK lista_fdisk
+
+    MKDISK          shift and go to state 7
+    EXECUTE         shift and go to state 8
+    REP             shift and go to state 9
+    $end            reduce using rule 6 (empty_production -> .)
+    FDISK           shift and go to state 10
+
+    comandos                       shift and go to state 1
+    comando_mkdisk                 shift and go to state 2
+    comando_execute                shift and go to state 3
+    comando_rep                    shift and go to state 4
+    empty_production               shift and go to state 5
+    comando_fdisk                  shift and go to state 6
+
+state 1
+
+    (0) S' -> comandos .
+
+
+
+state 2
+
+    (1) comandos -> comando_mkdisk .
+
+    $end            reduce using rule 1 (comandos -> comando_mkdisk .)
+
+
+state 3
+
+    (2) comandos -> comando_execute .
+
+    $end            reduce using rule 2 (comandos -> comando_execute .)
+
+
+state 4
+
+    (3) comandos -> comando_rep .
+
+    $end            reduce using rule 3 (comandos -> comando_rep .)
+
+
+state 5
+
+    (4) comandos -> empty_production .
+
+    $end            reduce using rule 4 (comandos -> empty_production .)
+
+
+state 6
+
+    (5) comandos -> comando_fdisk .
+
+    $end            reduce using rule 5 (comandos -> comando_fdisk .)
+
+
+state 7
+
+    (7) comando_mkdisk -> MKDISK . lista_mkdisk
+    (8) lista_mkdisk -> . lista_mkdisk parametros_mkdisk
+    (9) lista_mkdisk -> . parametros_mkdisk
+    (10) parametros_mkdisk -> . param_size
+    (11) parametros_mkdisk -> . param_unit
+    (12) parametros_mkdisk -> . param_path
+    (13) parametros_mkdisk -> . param_fit
+    (27) param_size -> . MAYOR_QUE SIZE IGUAL ENTERO
+    (30) param_unit -> . MAYOR_QUE UNIT IGUAL CADENA
+    (31) param_unit -> . MAYOR_QUE UNIT IGUAL ID
+    (28) param_path -> . MAYOR_QUE PATH IGUAL CADENA
+    (29) param_path -> . MAYOR_QUE PATH IGUAL ID
+    (34) param_fit -> . MAYOR_QUE FIT IGUAL CADENA
+    (35) param_fit -> . MAYOR_QUE FIT IGUAL ID
+
+    MAYOR_QUE       shift and go to state 17
+
+    lista_mkdisk                   shift and go to state 11
+    parametros_mkdisk              shift and go to state 12
+    param_size                     shift and go to state 13
+    param_unit                     shift and go to state 14
+    param_path                     shift and go to state 15
+    param_fit                      shift and go to state 16
+
+state 8
+
+    (14) comando_execute -> EXECUTE . lista_execute
+    (15) lista_execute -> . lista_execute parametros_execute
+    (16) lista_execute -> . parametros_execute
+    (17) parametros_execute -> . param_path
+    (28) param_path -> . MAYOR_QUE PATH IGUAL CADENA
+    (29) param_path -> . MAYOR_QUE PATH IGUAL ID
+
+    MAYOR_QUE       shift and go to state 21
+
+    lista_execute                  shift and go to state 18
+    parametros_execute             shift and go to state 19
+    param_path                     shift and go to state 20
+
+state 9
+
+    (18) comando_rep -> REP .
+
+    $end            reduce using rule 18 (comando_rep -> REP .)
+
+
+state 10
+
+    (19) comando_fdisk -> FDISK . lista_fdisk
+    (20) lista_fdisk -> . lista_fdisk parametros_fdisk
+    (21) lista_fdisk -> . parametros_fdisk
+    (22) parametros_fdisk -> . param_size
+    (23) parametros_fdisk -> . param_unit
+    (24) parametros_fdisk -> . param_path
+    (25) parametros_fdisk -> . param_name
+    (26) parametros_fdisk -> . param_type
+    (27) param_size -> . MAYOR_QUE SIZE IGUAL ENTERO
+    (30) param_unit -> . MAYOR_QUE UNIT IGUAL CADENA
+    (31) param_unit -> . MAYOR_QUE UNIT IGUAL ID
+    (28) param_path -> . MAYOR_QUE PATH IGUAL CADENA
+    (29) param_path -> . MAYOR_QUE PATH IGUAL ID
+    (32) param_name -> . MAYOR_QUE NAME IGUAL CADENA
+    (33) param_name -> . MAYOR_QUE NAME IGUAL ID
+    (36) param_type -> . MAYOR_QUE TYPE IGUAL CADENA
+    (37) param_type -> . MAYOR_QUE TYPE IGUAL ID
+
+    MAYOR_QUE       shift and go to state 29
+
+    lista_fdisk                    shift and go to state 22
+    parametros_fdisk               shift and go to state 23
+    param_size                     shift and go to state 24
+    param_unit                     shift and go to state 25
+    param_path                     shift and go to state 26
+    param_name                     shift and go to state 27
+    param_type                     shift and go to state 28
+
+state 11
+
+    (7) comando_mkdisk -> MKDISK lista_mkdisk .
+    (8) lista_mkdisk -> lista_mkdisk . parametros_mkdisk
+    (10) parametros_mkdisk -> . param_size
+    (11) parametros_mkdisk -> . param_unit
+    (12) parametros_mkdisk -> . param_path
+    (13) parametros_mkdisk -> . param_fit
+    (27) param_size -> . MAYOR_QUE SIZE IGUAL ENTERO
+    (30) param_unit -> . MAYOR_QUE UNIT IGUAL CADENA
+    (31) param_unit -> . MAYOR_QUE UNIT IGUAL ID
+    (28) param_path -> . MAYOR_QUE PATH IGUAL CADENA
+    (29) param_path -> . MAYOR_QUE PATH IGUAL ID
+    (34) param_fit -> . MAYOR_QUE FIT IGUAL CADENA
+    (35) param_fit -> . MAYOR_QUE FIT IGUAL ID
+
+    $end            reduce using rule 7 (comando_mkdisk -> MKDISK lista_mkdisk .)
+    MAYOR_QUE       shift and go to state 17
+
+    parametros_mkdisk              shift and go to state 30
+    param_size                     shift and go to state 13
+    param_unit                     shift and go to state 14
+    param_path                     shift and go to state 15
+    param_fit                      shift and go to state 16
+
+state 12
+
+    (9) lista_mkdisk -> parametros_mkdisk .
+
+    MAYOR_QUE       reduce using rule 9 (lista_mkdisk -> parametros_mkdisk .)
+    $end            reduce using rule 9 (lista_mkdisk -> parametros_mkdisk .)
+
+
+state 13
+
+    (10) parametros_mkdisk -> param_size .
+
+    MAYOR_QUE       reduce using rule 10 (parametros_mkdisk -> param_size .)
+    $end            reduce using rule 10 (parametros_mkdisk -> param_size .)
+
+
+state 14
+
+    (11) parametros_mkdisk -> param_unit .
+
+    MAYOR_QUE       reduce using rule 11 (parametros_mkdisk -> param_unit .)
+    $end            reduce using rule 11 (parametros_mkdisk -> param_unit .)
+
+
+state 15
+
+    (12) parametros_mkdisk -> param_path .
+
+    MAYOR_QUE       reduce using rule 12 (parametros_mkdisk -> param_path .)
+    $end            reduce using rule 12 (parametros_mkdisk -> param_path .)
+
+
+state 16
+
+    (13) parametros_mkdisk -> param_fit .
+
+    MAYOR_QUE       reduce using rule 13 (parametros_mkdisk -> param_fit .)
+    $end            reduce using rule 13 (parametros_mkdisk -> param_fit .)
+
+
+state 17
+
+    (27) param_size -> MAYOR_QUE . SIZE IGUAL ENTERO
+    (30) param_unit -> MAYOR_QUE . UNIT IGUAL CADENA
+    (31) param_unit -> MAYOR_QUE . UNIT IGUAL ID
+    (28) param_path -> MAYOR_QUE . PATH IGUAL CADENA
+    (29) param_path -> MAYOR_QUE . PATH IGUAL ID
+    (34) param_fit -> MAYOR_QUE . FIT IGUAL CADENA
+    (35) param_fit -> MAYOR_QUE . FIT IGUAL ID
+
+    SIZE            shift and go to state 31
+    UNIT            shift and go to state 32
+    PATH            shift and go to state 33
+    FIT             shift and go to state 34
+
+
+state 18
+
+    (14) comando_execute -> EXECUTE lista_execute .
+    (15) lista_execute -> lista_execute . parametros_execute
+    (17) parametros_execute -> . param_path
+    (28) param_path -> . MAYOR_QUE PATH IGUAL CADENA
+    (29) param_path -> . MAYOR_QUE PATH IGUAL ID
+
+    $end            reduce using rule 14 (comando_execute -> EXECUTE lista_execute .)
+    MAYOR_QUE       shift and go to state 21
+
+    parametros_execute             shift and go to state 35
+    param_path                     shift and go to state 20
+
+state 19
+
+    (16) lista_execute -> parametros_execute .
+
+    MAYOR_QUE       reduce using rule 16 (lista_execute -> parametros_execute .)
+    $end            reduce using rule 16 (lista_execute -> parametros_execute .)
+
+
+state 20
+
+    (17) parametros_execute -> param_path .
+
+    MAYOR_QUE       reduce using rule 17 (parametros_execute -> param_path .)
+    $end            reduce using rule 17 (parametros_execute -> param_path .)
+
+
+state 21
+
+    (28) param_path -> MAYOR_QUE . PATH IGUAL CADENA
+    (29) param_path -> MAYOR_QUE . PATH IGUAL ID
+
+    PATH            shift and go to state 33
+
+
+state 22
+
+    (19) comando_fdisk -> FDISK lista_fdisk .
+    (20) lista_fdisk -> lista_fdisk . parametros_fdisk
+    (22) parametros_fdisk -> . param_size
+    (23) parametros_fdisk -> . param_unit
+    (24) parametros_fdisk -> . param_path
+    (25) parametros_fdisk -> . param_name
+    (26) parametros_fdisk -> . param_type
+    (27) param_size -> . MAYOR_QUE SIZE IGUAL ENTERO
+    (30) param_unit -> . MAYOR_QUE UNIT IGUAL CADENA
+    (31) param_unit -> . MAYOR_QUE UNIT IGUAL ID
+    (28) param_path -> . MAYOR_QUE PATH IGUAL CADENA
+    (29) param_path -> . MAYOR_QUE PATH IGUAL ID
+    (32) param_name -> . MAYOR_QUE NAME IGUAL CADENA
+    (33) param_name -> . MAYOR_QUE NAME IGUAL ID
+    (36) param_type -> . MAYOR_QUE TYPE IGUAL CADENA
+    (37) param_type -> . MAYOR_QUE TYPE IGUAL ID
+
+    $end            reduce using rule 19 (comando_fdisk -> FDISK lista_fdisk .)
+    MAYOR_QUE       shift and go to state 29
+
+    parametros_fdisk               shift and go to state 36
+    param_size                     shift and go to state 24
+    param_unit                     shift and go to state 25
+    param_path                     shift and go to state 26
+    param_name                     shift and go to state 27
+    param_type                     shift and go to state 28
+
+state 23
+
+    (21) lista_fdisk -> parametros_fdisk .
+
+    MAYOR_QUE       reduce using rule 21 (lista_fdisk -> parametros_fdisk .)
+    $end            reduce using rule 21 (lista_fdisk -> parametros_fdisk .)
+
+
+state 24
+
+    (22) parametros_fdisk -> param_size .
+
+    MAYOR_QUE       reduce using rule 22 (parametros_fdisk -> param_size .)
+    $end            reduce using rule 22 (parametros_fdisk -> param_size .)
+
+
+state 25
+
+    (23) parametros_fdisk -> param_unit .
+
+    MAYOR_QUE       reduce using rule 23 (parametros_fdisk -> param_unit .)
+    $end            reduce using rule 23 (parametros_fdisk -> param_unit .)
+
+
+state 26
+
+    (24) parametros_fdisk -> param_path .
+
+    MAYOR_QUE       reduce using rule 24 (parametros_fdisk -> param_path .)
+    $end            reduce using rule 24 (parametros_fdisk -> param_path .)
+
+
+state 27
+
+    (25) parametros_fdisk -> param_name .
+
+    MAYOR_QUE       reduce using rule 25 (parametros_fdisk -> param_name .)
+    $end            reduce using rule 25 (parametros_fdisk -> param_name .)
+
+
+state 28
+
+    (26) parametros_fdisk -> param_type .
+
+    MAYOR_QUE       reduce using rule 26 (parametros_fdisk -> param_type .)
+    $end            reduce using rule 26 (parametros_fdisk -> param_type .)
+
+
+state 29
+
+    (27) param_size -> MAYOR_QUE . SIZE IGUAL ENTERO
+    (30) param_unit -> MAYOR_QUE . UNIT IGUAL CADENA
+    (31) param_unit -> MAYOR_QUE . UNIT IGUAL ID
+    (28) param_path -> MAYOR_QUE . PATH IGUAL CADENA
+    (29) param_path -> MAYOR_QUE . PATH IGUAL ID
+    (32) param_name -> MAYOR_QUE . NAME IGUAL CADENA
+    (33) param_name -> MAYOR_QUE . NAME IGUAL ID
+    (36) param_type -> MAYOR_QUE . TYPE IGUAL CADENA
+    (37) param_type -> MAYOR_QUE . TYPE IGUAL ID
+
+    SIZE            shift and go to state 31
+    UNIT            shift and go to state 32
+    PATH            shift and go to state 33
+    NAME            shift and go to state 37
+    TYPE            shift and go to state 38
+
+
+state 30
+
+    (8) lista_mkdisk -> lista_mkdisk parametros_mkdisk .
+
+    MAYOR_QUE       reduce using rule 8 (lista_mkdisk -> lista_mkdisk parametros_mkdisk .)
+    $end            reduce using rule 8 (lista_mkdisk -> lista_mkdisk parametros_mkdisk .)
+
+
+state 31
+
+    (27) param_size -> MAYOR_QUE SIZE . IGUAL ENTERO
+
+    IGUAL           shift and go to state 39
+
+
+state 32
+
+    (30) param_unit -> MAYOR_QUE UNIT . IGUAL CADENA
+    (31) param_unit -> MAYOR_QUE UNIT . IGUAL ID
+
+    IGUAL           shift and go to state 40
+
+
+state 33
+
+    (28) param_path -> MAYOR_QUE PATH . IGUAL CADENA
+    (29) param_path -> MAYOR_QUE PATH . IGUAL ID
+
+    IGUAL           shift and go to state 41
+
+
+state 34
+
+    (34) param_fit -> MAYOR_QUE FIT . IGUAL CADENA
+    (35) param_fit -> MAYOR_QUE FIT . IGUAL ID
+
+    IGUAL           shift and go to state 42
+
+
+state 35
+
+    (15) lista_execute -> lista_execute parametros_execute .
+
+    MAYOR_QUE       reduce using rule 15 (lista_execute -> lista_execute parametros_execute .)
+    $end            reduce using rule 15 (lista_execute -> lista_execute parametros_execute .)
+
+
+state 36
+
+    (20) lista_fdisk -> lista_fdisk parametros_fdisk .
+
+    MAYOR_QUE       reduce using rule 20 (lista_fdisk -> lista_fdisk parametros_fdisk .)
+    $end            reduce using rule 20 (lista_fdisk -> lista_fdisk parametros_fdisk .)
+
+
+state 37
+
+    (32) param_name -> MAYOR_QUE NAME . IGUAL CADENA
+    (33) param_name -> MAYOR_QUE NAME . IGUAL ID
+
+    IGUAL           shift and go to state 43
+
+
+state 38
+
+    (36) param_type -> MAYOR_QUE TYPE . IGUAL CADENA
+    (37) param_type -> MAYOR_QUE TYPE . IGUAL ID
+
+    IGUAL           shift and go to state 44
+
+
+state 39
+
+    (27) param_size -> MAYOR_QUE SIZE IGUAL . ENTERO
+
+    ENTERO          shift and go to state 45
+
+
+state 40
+
+    (30) param_unit -> MAYOR_QUE UNIT IGUAL . CADENA
+    (31) param_unit -> MAYOR_QUE UNIT IGUAL . ID
+
+    CADENA          shift and go to state 46
+    ID              shift and go to state 47
+
+
+state 41
+
+    (28) param_path -> MAYOR_QUE PATH IGUAL . CADENA
+    (29) param_path -> MAYOR_QUE PATH IGUAL . ID
+
+    CADENA          shift and go to state 48
+    ID              shift and go to state 49
+
+
+state 42
+
+    (34) param_fit -> MAYOR_QUE FIT IGUAL . CADENA
+    (35) param_fit -> MAYOR_QUE FIT IGUAL . ID
+
+    CADENA          shift and go to state 50
+    ID              shift and go to state 51
+
+
+state 43
+
+    (32) param_name -> MAYOR_QUE NAME IGUAL . CADENA
+    (33) param_name -> MAYOR_QUE NAME IGUAL . ID
+
+    CADENA          shift and go to state 52
+    ID              shift and go to state 53
+
+
+state 44
+
+    (36) param_type -> MAYOR_QUE TYPE IGUAL . CADENA
+    (37) param_type -> MAYOR_QUE TYPE IGUAL . ID
+
+    CADENA          shift and go to state 54
+    ID              shift and go to state 55
+
+
+state 45
+
+    (27) param_size -> MAYOR_QUE SIZE IGUAL ENTERO .
+
+    MAYOR_QUE       reduce using rule 27 (param_size -> MAYOR_QUE SIZE IGUAL ENTERO .)
+    $end            reduce using rule 27 (param_size -> MAYOR_QUE SIZE IGUAL ENTERO .)
+
+
+state 46
+
+    (30) param_unit -> MAYOR_QUE UNIT IGUAL CADENA .
+
+    MAYOR_QUE       reduce using rule 30 (param_unit -> MAYOR_QUE UNIT IGUAL CADENA .)
+    $end            reduce using rule 30 (param_unit -> MAYOR_QUE UNIT IGUAL CADENA .)
+
+
+state 47
+
+    (31) param_unit -> MAYOR_QUE UNIT IGUAL ID .
+
+    MAYOR_QUE       reduce using rule 31 (param_unit -> MAYOR_QUE UNIT IGUAL ID .)
+    $end            reduce using rule 31 (param_unit -> MAYOR_QUE UNIT IGUAL ID .)
+
+
+state 48
+
+    (28) param_path -> MAYOR_QUE PATH IGUAL CADENA .
+
+    MAYOR_QUE       reduce using rule 28 (param_path -> MAYOR_QUE PATH IGUAL CADENA .)
+    $end            reduce using rule 28 (param_path -> MAYOR_QUE PATH IGUAL CADENA .)
+
+
+state 49
+
+    (29) param_path -> MAYOR_QUE PATH IGUAL ID .
+
+    MAYOR_QUE       reduce using rule 29 (param_path -> MAYOR_QUE PATH IGUAL ID .)
+    $end            reduce using rule 29 (param_path -> MAYOR_QUE PATH IGUAL ID .)
+
+
+state 50
+
+    (34) param_fit -> MAYOR_QUE FIT IGUAL CADENA .
+
+    MAYOR_QUE       reduce using rule 34 (param_fit -> MAYOR_QUE FIT IGUAL CADENA .)
+    $end            reduce using rule 34 (param_fit -> MAYOR_QUE FIT IGUAL CADENA .)
+
+
+state 51
+
+    (35) param_fit -> MAYOR_QUE FIT IGUAL ID .
+
+    MAYOR_QUE       reduce using rule 35 (param_fit -> MAYOR_QUE FIT IGUAL ID .)
+    $end            reduce using rule 35 (param_fit -> MAYOR_QUE FIT IGUAL ID .)
+
+
+state 52
+
+    (32) param_name -> MAYOR_QUE NAME IGUAL CADENA .
+
+    MAYOR_QUE       reduce using rule 32 (param_name -> MAYOR_QUE NAME IGUAL CADENA .)
+    $end            reduce using rule 32 (param_name -> MAYOR_QUE NAME IGUAL CADENA .)
+
+
+state 53
+
+    (33) param_name -> MAYOR_QUE NAME IGUAL ID .
+
+    MAYOR_QUE       reduce using rule 33 (param_name -> MAYOR_QUE NAME IGUAL ID .)
+    $end            reduce using rule 33 (param_name -> MAYOR_QUE NAME IGUAL ID .)
+
+
+state 54
+
+    (36) param_type -> MAYOR_QUE TYPE IGUAL CADENA .
+
+    MAYOR_QUE       reduce using rule 36 (param_type -> MAYOR_QUE TYPE IGUAL CADENA .)
+    $end            reduce using rule 36 (param_type -> MAYOR_QUE TYPE IGUAL CADENA .)
+
+
+state 55
+
+    (37) param_type -> MAYOR_QUE TYPE IGUAL ID .
+
+    MAYOR_QUE       reduce using rule 37 (param_type -> MAYOR_QUE TYPE IGUAL ID .)
+    $end            reduce using rule 37 (param_type -> MAYOR_QUE TYPE IGUAL ID .)
+
