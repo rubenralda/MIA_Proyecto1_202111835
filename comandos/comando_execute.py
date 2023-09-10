@@ -1,18 +1,23 @@
 from .comando_base import Comando
+import os
 
 class Execute(Comando):
 
-    def __init__(self, parametros: list, lexer, parser) -> None:
+    def __init__(self, parametros: dict, lexer, parser) -> None:
         self.parametros = parametros
         self.lexer = lexer
         self.parser = parser
 
     def ejecutar(self):
         self.lexer.lineno = 1
-        if len(self.parametros) == 0:
+        direccion = self.parametros.get("path")
+        if direccion == None:
             print('Faltan parametros')
             return False
-        with open(self.parametros['path'], "r") as comandos:
+        if not os.path.isfile(direccion):
+            print("La ruta no es un archivo valido")
+            return False
+        with open(direccion, "r") as comandos:
             for linea in comandos.readlines():
                 resultado = self.parser.parse(linea)
                 if resultado != None:

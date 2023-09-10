@@ -4,13 +4,14 @@ from comandos.comando_mkdisk import Mkdisk
 from comandos.comando_execute import Execute
 from comandos.comando_rep import Rep
 from comandos.comando_fdisk import Fdisk
-
+from comandos.comando_rmdisk import Rmdisk
 #-------------------------------ANALIZADOR LEXICO---------------------------------------------------------------------
 errores_lexicos = []
 
 palabras_reservadas = {
     'execute': 'EXECUTE',
     'mkdisk': 'MKDISK',
+    'rmdisk' : 'RMDISK',
     'fdisk' : 'FDISK',
     'rep': 'REP',
     'path': 'PATH',
@@ -18,7 +19,9 @@ palabras_reservadas = {
     'unit' : 'UNIT',
     'name' : 'NAME',
     'fit' : 'FIT',
-    'type' : 'TYPE'
+    'type' : 'TYPE',
+    'delete' : 'DELETE',
+    'add' : 'ADD'
 }
 
 tokens = [
@@ -26,12 +29,12 @@ tokens = [
     'CADENA',
     'ID',
     'IGUAL',
-    'MAYOR_QUE'
+    'GUION'
 
 ] + list(palabras_reservadas.values())
 
 t_IGUAL = r'\='
-t_MAYOR_QUE = r'\>'
+t_GUION = r'\-'
 
 def t_ENTERO(t):
     r'\d+'
@@ -70,7 +73,8 @@ def p_comandos(t):
                 | comando_execute
                 | comando_rep
                 | empty_production
-                | comando_fdisk'''
+                | comando_fdisk
+                | comando_rmdisk'''
     t[0] = t[1]
 
 def p_empty_production(t):
@@ -99,6 +103,25 @@ def p_parametros_mkdisk(t):
                 | param_unit
                 | param_path
                 | param_fit'''
+    t[0] = t[1]
+
+#-------comando rmdisk---------
+def p_comando_rmdisk(t):
+    'comando_rmdisk : RMDISK lista_rmdisk'
+    # t[0] : t[1] t[2] t[3]
+    t[0] = Rmdisk(t[2])
+
+def p_lista_rmdisk(t):
+    '''lista_rmdisk : lista_rmdisk parametros_rmdisk
+                | parametros_rmdisk'''
+    if len(t) != 2:
+        t[1].update(t[2])
+        t[0] = t[1]
+    else:
+        t[0] = t[1]
+
+def p_parametros_rmdisk(t):
+    '''parametros_rmdisk : param_path'''
     t[0] = t[1]
 
 #------------comando execute----------
@@ -143,42 +166,53 @@ def p_lista_fdisk(t):
 
 def p_parametros_fdisk(t):
     '''parametros_fdisk : param_size
-                | param_unit
                 | param_path
                 | param_name
-                | param_type'''
+                | param_unit
+                | param_type
+                | param_fit
+                | param_delete
+                | param_add'''
     t[0] = t[1]
 
 #------------Parametros------------
 def p_param_size(t):
-    'param_size : MAYOR_QUE SIZE IGUAL ENTERO'
+    'param_size : GUION SIZE IGUAL ENTERO'
     t[0] = {'size': t[4]}
 
 def p_param_path(t):
-    '''param_path : MAYOR_QUE PATH IGUAL CADENA
-                |  MAYOR_QUE PATH IGUAL ID'''
+    '''param_path : GUION PATH IGUAL CADENA
+                |  GUION PATH IGUAL ID'''
     t[0] = {'path': t[4]}
 
 def p_param_unit(t):
-    '''param_unit : MAYOR_QUE UNIT IGUAL CADENA
-                |  MAYOR_QUE UNIT IGUAL ID'''
+    '''param_unit : GUION UNIT IGUAL CADENA
+                |  GUION UNIT IGUAL ID'''
     t[0] = {'unit': t[4]}
 
 def p_param_name(t):
-    '''param_name : MAYOR_QUE NAME IGUAL CADENA
-                |  MAYOR_QUE NAME IGUAL ID'''
+    '''param_name : GUION NAME IGUAL CADENA
+                |  GUION NAME IGUAL ID'''
     t[0] = {'name': t[4]}
 
 def p_param_fit(t):
-    '''param_fit : MAYOR_QUE FIT IGUAL CADENA
-                |  MAYOR_QUE FIT IGUAL ID'''
+    '''param_fit : GUION FIT IGUAL CADENA
+                |  GUION FIT IGUAL ID'''
     t[0] = {'fit': t[4]}
 
 def p_param_type(t):
-    '''param_type : MAYOR_QUE TYPE IGUAL CADENA
-                |  MAYOR_QUE TYPE IGUAL ID'''
+    '''param_type : GUION TYPE IGUAL CADENA
+                |  GUION TYPE IGUAL ID'''
     t[0] = {'type': t[4]}
 
+def p_param_delete(t):
+    '''param_delete : GUION DELETE IGUAL CADENA
+                |  GUION DELETE IGUAL ID'''
+    t[0] = {'delete': t[4]}
+
+def p_param_add(t):
+    'param_add : GUION ADD IGUAL ENTERO'
+    t[0] = {'add': t[4]}
 
 lexer = lex.lex()
 

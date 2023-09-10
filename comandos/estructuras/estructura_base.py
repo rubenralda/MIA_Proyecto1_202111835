@@ -7,7 +7,7 @@ class EstructuraBase(ABC):
         for atributo, valor in vars(self).items():
             tipo = type(valor).__name__
             if tipo == 'int':
-                bytes += valor.to_bytes(4, byteorder = 'big')
+                bytes += valor.to_bytes(4, byteorder = 'big', signed = True)
             elif tipo == 'str':
                 bytes += valor.encode('utf-8')
             elif tipo == 'bool':
@@ -20,5 +20,5 @@ class EstructuraBase(ABC):
         return bytes
     
     @abstractmethod
-    def set_bytes(self, bytes: bytes):
+    def set_bytes(self, archivo_binario = None):
         pass

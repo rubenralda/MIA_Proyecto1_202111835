@@ -3,7 +3,6 @@ from .comando_base import Comando
 import time
 import random
 
-
 class Mkdisk(Comando):
     def __init__(self, parametros: dict):
         self.parametros = parametros
@@ -16,7 +15,7 @@ class Mkdisk(Comando):
             return False
         if size <= 0:
             print("El size debe ser mayor a cero")
-            return False            
+            return False
         match self.parametros.get("unit", "M").upper():
             case "K":
                 size *= 1024
@@ -32,7 +31,7 @@ class Mkdisk(Comando):
         if fit != "BF" and fit != "FF" and fit != "WF":
             print("Valor del parametro fit no es valido")
             return False
-        fit = fit[0:1]
+        fit = fit[0:1] #asi porque es un byte
         estruct_mbr = Mbr(size, fecha, signature, fit)
        
         with open(direccion, "wb") as archivo_binario:
