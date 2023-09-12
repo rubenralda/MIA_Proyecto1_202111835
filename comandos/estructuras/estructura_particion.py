@@ -59,7 +59,7 @@ class Particion(EstructuraBase):
     
     def buscar_particion_logica(self, name: str, archivo_binario):
         if self.tipo != "E":
-            return False
+            return None
         estructura_ebr = Ebr(False, "W", self.start, 0, -1, "")
         archivo_binario.seek(self.start)
         estructura_ebr.set_bytes(archivo_binario)
@@ -87,3 +87,34 @@ class Particion(EstructuraBase):
         archivo_binario.seek(self.start)
         estructura_ebr.set_bytes(archivo_binario)
         return estructura_ebr.add_particion(name, archivo_binario, add, self.s)
+    
+    def reporte_particion(self, archivo_binario) -> str:
+        reporte = '''
+            <tr>
+            <td bgcolor="/rdylgn11/3:/rdylgn11/3"><b>Particion</b></td>
+            <td bgcolor="/rdylgn11/3:/rdylgn11/3"><b> </b></td>
+            </tr>
+            <tr>
+            <td>part_status</td><td>{}</td>
+            </tr>
+            <tr>
+            <td>part_type</td><td>{}</td>
+            </tr>
+            <tr>
+            <td>part_fit</td><td>{}</td>
+            </tr>
+            <tr>
+            <td>part_start</td><td>{}</td>
+            </tr>
+            <tr>
+            <td>part_size</td><td>{}</td>
+            </tr>
+            <tr>
+            <td>part_name</td><td>{}</td>
+            </tr>'''.format(self.status, self.tipo, self.fit, self.start, self.s, self.name.replace("\0", ""))
+        if self.tipo == "E":
+            estructura_ebr = Ebr(False, "W", self.start, 0, -1, "")
+            archivo_binario.seek(self.start)
+            estructura_ebr.set_bytes(archivo_binario)
+            reporte += estructura_ebr.reporte_logica(archivo_binario)
+        return reporte

@@ -6,6 +6,8 @@ from comandos.comando_rep import Rep
 from comandos.comando_fdisk import Fdisk
 from comandos.comando_rmdisk import Rmdisk
 from comandos.comando_mount import Mount
+from comandos.comando_mount_list import MountList
+from comandos.comando_unmount import Unmount
 #-------------------------------ANALIZADOR LEXICO---------------------------------------------------------------------
 errores_lexicos = []
 
@@ -16,6 +18,8 @@ palabras_reservadas = {
     'fdisk' : 'FDISK',
     'rep': 'REP',
     'mount': 'MOUNT',
+    'mountlist': 'MOUNT_LIST',
+    'unmount' : 'UNMOUNT',
     'path': 'PATH',
     'size': 'SIZE',
     'unit' : 'UNIT',
@@ -23,7 +27,8 @@ palabras_reservadas = {
     'fit' : 'FIT',
     'type' : 'TYPE',
     'delete' : 'DELETE',
-    'add' : 'ADD'
+    'add' : 'ADD',
+    'id' : 'ID_WORD'
 }
 
 tokens = [
@@ -32,7 +37,8 @@ tokens = [
     'CADENA_FILE_PATH',
     'IGUAL',
     'GUION',
-    'FILE_PATH'
+    'FILE_PATH',
+    'ID_PAR'
 
 ] + list(palabras_reservadas.values())
 
@@ -44,6 +50,10 @@ def t_COMMENT(t):
 
 t_IGUAL = r'\='
 t_GUION = r'\-'
+
+def t_ID_PAR(t):
+    r'35[a-zA-z0-9_]+'
+    return t
 
 def t_ENTERO(t):
     r'\d+'
@@ -88,7 +98,10 @@ def p_comandos(t):
                 | comando_rep
                 | empty_production
                 | comando_fdisk
-                | comando_rmdisk'''
+                | comando_rmdisk
+                | comando_mount
+                | comando_mountlist
+                | comando_unmount'''
     t[0] = t[1]
 
 def p_empty_production(t):
@@ -162,7 +175,6 @@ def p_parametros_execute(t):
 #------------comando mount----------
 def p_comando_mount(t):
     'comando_mount : MOUNT lista_mount'
-    # se manda el parser para ejecutar todos los comandos del archivo
     t[0] = Mount(t[2])
 
 def p_lista_mount(t):
@@ -181,8 +193,23 @@ def p_parametros_mount(t):
 
 #-------comando rep---------
 def p_comando_rep(t):
-    'comando_rep : REP'
-    t[0] = Rep()
+    'comando_rep : REP lista_rep'
+    t[0] = Rep(t[2])
+
+def p_lista_rep(t):
+    '''lista_rep : lista_rep parametros_rep
+                | parametros_rep'''
+    if len(t) != 2:
+        t[1].update(t[2])
+        t[0] = t[1]
+    else:
+        t[0] = t[1]
+
+def p_parametros_rep(t):
+    '''parametros_rep : param_path
+                | param_name
+                | param_id'''
+    t[0] = t[1]
 
 #------------comando fdisk----------
 def p_comando_fdisk(t):
@@ -207,6 +234,29 @@ def p_parametros_fdisk(t):
                 | param_fit
                 | param_delete
                 | param_add'''
+    t[0] = t[1]
+
+#-------comando mount list---------
+def p_comando_mountlist(t):
+    'comando_mountlist : MOUNT_LIST'
+    t[0] = MountList()
+
+#------------comando unmount----------
+def p_comando_unmount(t):
+    'comando_unmount : UNMOUNT lista_unmount'
+    t[0] = Unmount(t[2])
+
+def p_lista_unmount(t):
+    '''lista_unmount : lista_unmount parametros_unmount
+                | parametros_unmount'''
+    if len(t) != 2:
+        t[1].update(t[2])
+        t[0] = t[1]
+    else:
+        t[0] = t[1]
+
+def p_parametros_unmount(t):
+    '''parametros_unmount : param_id'''
     t[0] = t[1]
 
 #------------Parametros------------
@@ -243,6 +293,10 @@ def p_param_add(t):
     '''param_add : GUION ADD IGUAL ENTERO
                 | GUION ADD IGUAL entero_negativo'''
     t[0] = {'add': t[4]}
+
+def p_param_id(t):
+    '''param_id : GUION ID_WORD IGUAL ID_PAR'''
+    t[0] = {'id': t[4]}
 
 # gramaticas extra
 

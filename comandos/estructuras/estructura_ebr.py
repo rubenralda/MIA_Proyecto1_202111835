@@ -114,9 +114,9 @@ class Ebr(EstructuraBase):
     def buscar_particion(self, name:str, archivo_binario):
         if self.status:
             if self.name == name:
-                return True
+                return self
         if self.siguiente == -1:
-            return False
+            return None
         else:
             archivo_binario.seek(self.siguiente)
             ebr_siguiente = Ebr(False, "W", 0, 0, -1, "")
@@ -169,3 +169,33 @@ class Ebr(EstructuraBase):
             ebr_siguiente.set_bytes(archivo_binario) # obtengo el ebr siguiente
             return ebr_siguiente.add_particion(name, archivo_binario, add, final)
        
+    def reporte_logica(self, archivo_binario) -> str:
+        reporte = '''
+            <tr>
+            <td bgcolor="/rdylgn11/5:/rdylgn11/5"><b>Particion Logica</b></td>
+            <td bgcolor="/rdylgn11/5:/rdylgn11/5"><b> </b></td>
+            </tr>
+            <tr>
+            <td>part_status</td><td>{}</td>
+            </tr>
+            <tr>
+            <td>part_next</td><td>{}</td>
+            </tr>
+            <tr>
+            <td>part_fit</td><td>{}</td>
+            </tr>
+            <tr>
+            <td>part_start</td><td>{}</td>
+            </tr>
+            <tr>
+            <td>part_size</td><td>{}</td>
+            </tr>
+            <tr>
+            <td>part_name</td><td>{}</td>
+            </tr>'''.format(self.status, self.siguiente, self.fit, self.start, self.size, self.name.replace("\0", ""))
+        if self.siguiente != -1:
+            archivo_binario.seek(self.siguiente)
+            ebr_siguiente = Ebr(False, "W", 0, 0, -1, "")
+            ebr_siguiente.set_bytes(archivo_binario) # obtengo el ebr siguiente
+            reporte += ebr_siguiente.reporte_logica(archivo_binario)
+        return reporte

@@ -35,7 +35,6 @@ class Fdisk(Comando):
             return False
         add = self.parametros.get("add")
         if add != None:
-            print(add)
             match self.parametros.get("unit", "K").upper():
                 case "B":
                     add = add

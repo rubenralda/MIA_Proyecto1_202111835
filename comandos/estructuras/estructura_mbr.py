@@ -1,6 +1,7 @@
 from .estructura_base import EstructuraBase
 from .estructura_particion import Particion
 from .estructura_ebr import Ebr
+import time
 
 class Mbr(EstructuraBase):
 
@@ -25,7 +26,7 @@ class Mbr(EstructuraBase):
         for particion in self.particiones:
             particion.set_bytes(archivo_binario)
 
-    # True si existe, False si no
+    # Particion si existe, None si no
     def buscar_particion(self, name: str, archivo_binario):
         largo_nombre = len(name)
         while(largo_nombre < 16):
@@ -34,10 +35,14 @@ class Mbr(EstructuraBase):
         for particion in self.particiones:
             if particion.status == "V":
                 if particion.name == name:
-                    return True
+                    return particion
+
+        # buscar en las particiones logicas
+        for particion in self.particiones:
+            if particion.status == "V":
                 if particion.tipo == "E":
                     return particion.buscar_particion_logica(name, archivo_binario)
-        return False
+        return None
 
     # Verifica si ya existe solo hay una extendida y ejecuta el fit del disco
     def crear_particion(self, size: int, name: str, tipo: str, fit: str, archivo_binario):
@@ -212,14 +217,15 @@ class Mbr(EstructuraBase):
             if particion.status == "V":
                 if particion.name == name:
                     particion.status = "F"
-                    if particion.tipo == "E":
-                        archivo_binario.seek(particion.start)
-                        archivo_binario.write(b'\x00'*particion.s)
+                    archivo_binario.seek(particion.start)
+                    archivo_binario.write(b'\x00'*particion.s)
                     particion.tipo = "P"
-                    return True                
+                    return True
+            i += 1
+        for particion in self.particiones:
+            if particion.status == "V":       
                 if particion.tipo == "E":
                     return particion.eliminar_particion_logica(name, archivo_binario)
-            i += 1
         return False
     
     # True si existe, False si no
@@ -242,6 +248,36 @@ class Mbr(EstructuraBase):
                             return False
                     self.particiones[i].s = nuevo_size
                     return True
+                
+        # buscar en las particiones logicas
+        for i, particion in enumerate(self.particiones):
+            if particion.status == "V":
                 if particion.tipo == "E":
                     return particion.add_particion_logica(name, archivo_binario, add)
         return False
+    
+    def reporte_mbr(self, archivo_binario) -> str:
+        reporte = '''digraph reporte_del_mbr_ff {{
+    node [shape=plaintext]
+    mbr [
+        label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr>
+                <td bgcolor="/rdylgn6/5:/rdylgn6/5"><b>REPORTE DE MBR</b></td>
+                <td bgcolor="/rdylgn6/5:/rdylgn6/5"><b> </b></td>
+                </tr>
+                <tr>
+                <td>mbr_tamano</td><td>{}</td>
+                </tr>
+                <tr>
+                <td>mbr_fecha_creacion</td><td>{}</td>
+                </tr>
+                <tr>
+                <td>mbr_disk_signature</td><td>{}</td>
+                </tr>'''.format(self.tamano, time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(self.fecha)), self.signature)
+        for particion in self.particiones:
+            reporte += particion.reporte_particion(archivo_binario)
+        reporte += '''</table>
+        >];
+}'''
+        return reporte
