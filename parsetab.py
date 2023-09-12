@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'ADD CADENA DELETE ENTERO EXECUTE FDISK FIT GUION ID IGUAL MKDISK NAME PATH REP RMDISK SIZE TYPE UNITcomandos : comando_mkdisk\n                | comando_execute\n                | comando_rep\n                | empty_production\n                | comando_fdisk\n                | comando_rmdisk\n    empty_production : \n    comando_mkdisk : MKDISK lista_mkdisklista_mkdisk : lista_mkdisk parametros_mkdisk\n                | parametros_mkdiskparametros_mkdisk : param_size\n                | param_unit\n                | param_path\n                | param_fitcomando_rmdisk : RMDISK lista_rmdisklista_rmdisk : lista_rmdisk parametros_rmdisk\n                | parametros_rmdiskparametros_rmdisk : param_pathcomando_execute : EXECUTE lista_executelista_execute : lista_execute parametros_execute\n                | parametros_executeparametros_execute : param_pathcomando_rep : REPcomando_fdisk : FDISK lista_fdisklista_fdisk : lista_fdisk parametros_fdisk\n                | parametros_fdiskparametros_fdisk : param_size\n                | param_path\n                | param_name\n                | param_unit\n                | param_type\n                | param_fit\n                | param_delete\n                | param_addparam_size : GUION SIZE IGUAL ENTEROparam_path : GUION PATH IGUAL CADENA\n                |  GUION PATH IGUAL IDparam_unit : GUION UNIT IGUAL CADENA\n                |  GUION UNIT IGUAL IDparam_name : GUION NAME IGUAL CADENA\n                |  GUION NAME IGUAL IDparam_fit : GUION FIT IGUAL CADENA\n                |  GUION FIT IGUAL IDparam_type : GUION TYPE IGUAL CADENA\n                |  GUION TYPE IGUAL IDparam_delete : GUION DELETE IGUAL CADENA\n                |  GUION DELETE IGUAL IDparam_add : GUION ADD IGUAL ENTERO'
+_lr_signature = 'leftGUIONADD CADENA_FILE_PATH DELETE ENTERO EXECUTE FDISK FILE_PATH FIT GUION ID IGUAL MKDISK NAME PATH REP RMDISK SIZE TYPE UNITcomandos : comando_mkdisk\n                | comando_execute\n                | comando_rep\n                | empty_production\n                | comando_fdisk\n                | comando_rmdisk\n    empty_production : \n    comando_mkdisk : MKDISK lista_mkdisklista_mkdisk : lista_mkdisk parametros_mkdisk\n                | parametros_mkdiskparametros_mkdisk : param_size\n                | param_unit\n                | param_path\n                | param_fitcomando_rmdisk : RMDISK lista_rmdisklista_rmdisk : lista_rmdisk parametros_rmdisk\n                | parametros_rmdiskparametros_rmdisk : param_pathcomando_execute : EXECUTE lista_executelista_execute : lista_execute parametros_execute\n                | parametros_executeparametros_execute : param_pathcomando_rep : REPcomando_fdisk : FDISK lista_fdisklista_fdisk : lista_fdisk parametros_fdisk\n                | parametros_fdiskparametros_fdisk : param_size\n                | param_path\n                | param_name\n                | param_unit\n                | param_type\n                | param_fit\n                | param_delete\n                | param_addparam_size : GUION SIZE IGUAL ENTEROparam_path : GUION PATH IGUAL CADENA_FILE_PATH\n                |  GUION PATH IGUAL FILE_PATHparam_unit : GUION UNIT IGUAL IDparam_name : GUION NAME IGUAL IDparam_fit : GUION FIT IGUAL IDparam_type : GUION TYPE IGUAL IDparam_delete : GUION DELETE IGUAL IDparam_add : GUION ADD IGUAL ENTERO\n                | GUION ADD IGUAL entero_negativoentero_negativo : GUION ENTERO %prec GUION'
     
-_lr_action_items = {'MKDISK':([0,],[8,]),'EXECUTE':([0,],[9,]),'REP':([0,],[10,]),'$end':([0,1,2,3,4,5,6,7,10,13,14,15,16,17,18,20,21,22,24,25,26,27,28,29,30,31,32,33,35,36,37,38,43,44,49,58,59,60,61,62,63,64,65,66,67,68,69,70,71,],[-7,0,-1,-2,-3,-4,-5,-6,-23,-8,-10,-11,-12,-13,-14,-19,-21,-22,-24,-26,-27,-28,-29,-30,-31,-32,-33,-34,-15,-17,-18,-9,-20,-25,-16,-35,-38,-39,-36,-37,-42,-43,-40,-41,-44,-45,-46,-47,-48,]),'FDISK':([0,],[11,]),'RMDISK':([0,],[12,]),'GUION':([8,9,11,12,13,14,15,16,17,18,20,21,22,24,25,26,27,28,29,30,31,32,33,35,36,37,38,43,44,49,58,59,60,61,62,63,64,65,66,67,68,69,70,71,],[19,23,34,23,19,-10,-11,-12,-13,-14,23,-21,-22,34,-26,-27,-28,-29,-30,-31,-32,-33,-34,23,-17,-18,-9,-20,-25,-16,-35,-38,-39,-36,-37,-42,-43,-40,-41,-44,-45,-46,-47,-48,]),'SIZE':([19,34,],[39,39,]),'UNIT':([19,34,],[40,40,]),'PATH':([19,23,34,],[41,41,41,]),'FIT':([19,34,],[42,42,]),'NAME':([34,],[45,]),'TYPE':([34,],[46,]),'DELETE':([34,],[47,]),'ADD':([34,],[48,]),'IGUAL':([39,40,41,42,45,46,47,48,],[50,51,52,53,54,55,56,57,]),'ENTERO':([50,57,],[58,71,]),'CADENA':([51,52,53,54,55,56,],[59,61,63,65,67,69,]),'ID':([51,52,53,54,55,56,],[60,62,64,66,68,70,]),}
+_lr_action_items = {'MKDISK':([0,],[8,]),'EXECUTE':([0,],[9,]),'REP':([0,],[10,]),'$end':([0,1,2,3,4,5,6,7,10,13,14,15,16,17,18,20,21,22,24,25,26,27,28,29,30,31,32,33,35,36,37,38,43,44,49,58,59,60,61,62,63,64,65,67,68,69,],[-7,0,-1,-2,-3,-4,-5,-6,-23,-8,-10,-11,-12,-13,-14,-19,-21,-22,-24,-26,-27,-28,-29,-30,-31,-32,-33,-34,-15,-17,-18,-9,-20,-25,-16,-35,-38,-36,-37,-40,-39,-41,-42,-43,-44,-45,]),'FDISK':([0,],[11,]),'RMDISK':([0,],[12,]),'GUION':([8,9,11,12,13,14,15,16,17,18,20,21,22,24,25,26,27,28,29,30,31,32,33,35,36,37,38,43,44,49,57,58,59,60,61,62,63,64,65,67,68,69,],[19,23,34,23,19,-10,-11,-12,-13,-14,23,-21,-22,34,-26,-27,-28,-29,-30,-31,-32,-33,-34,23,-17,-18,-9,-20,-25,-16,66,-35,-38,-36,-37,-40,-39,-41,-42,-43,-44,-45,]),'SIZE':([19,34,],[39,39,]),'UNIT':([19,34,],[40,40,]),'PATH':([19,23,34,],[41,41,41,]),'FIT':([19,34,],[42,42,]),'NAME':([34,],[45,]),'TYPE':([34,],[46,]),'DELETE':([34,],[47,]),'ADD':([34,],[48,]),'IGUAL':([39,40,41,42,45,46,47,48,],[50,51,52,53,54,55,56,57,]),'ENTERO':([50,57,66,],[58,67,69,]),'ID':([51,53,54,55,56,],[59,62,63,64,65,]),'CADENA_FILE_PATH':([52,],[60,]),'FILE_PATH':([52,],[61,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'comandos':([0,],[1,]),'comando_mkdisk':([0,],[2,]),'comando_execute':([0,],[3,]),'comando_rep':([0,],[4,]),'empty_production':([0,],[5,]),'comando_fdisk':([0,],[6,]),'comando_rmdisk':([0,],[7,]),'lista_mkdisk':([8,],[13,]),'parametros_mkdisk':([8,13,],[14,38,]),'param_size':([8,11,13,24,],[15,26,15,26,]),'param_unit':([8,11,13,24,],[16,29,16,29,]),'param_path':([8,9,11,12,13,20,24,35,],[17,22,27,37,17,22,27,37,]),'param_fit':([8,11,13,24,],[18,31,18,31,]),'lista_execute':([9,],[20,]),'parametros_execute':([9,20,],[21,43,]),'lista_fdisk':([11,],[24,]),'parametros_fdisk':([11,24,],[25,44,]),'param_name':([11,24,],[28,28,]),'param_type':([11,24,],[30,30,]),'param_delete':([11,24,],[32,32,]),'param_add':([11,24,],[33,33,]),'lista_rmdisk':([12,],[35,]),'parametros_rmdisk':([12,35,],[36,49,]),}
+_lr_goto_items = {'comandos':([0,],[1,]),'comando_mkdisk':([0,],[2,]),'comando_execute':([0,],[3,]),'comando_rep':([0,],[4,]),'empty_production':([0,],[5,]),'comando_fdisk':([0,],[6,]),'comando_rmdisk':([0,],[7,]),'lista_mkdisk':([8,],[13,]),'parametros_mkdisk':([8,13,],[14,38,]),'param_size':([8,11,13,24,],[15,26,15,26,]),'param_unit':([8,11,13,24,],[16,29,16,29,]),'param_path':([8,9,11,12,13,20,24,35,],[17,22,27,37,17,22,27,37,]),'param_fit':([8,11,13,24,],[18,31,18,31,]),'lista_execute':([9,],[20,]),'parametros_execute':([9,20,],[21,43,]),'lista_fdisk':([11,],[24,]),'parametros_fdisk':([11,24,],[25,44,]),'param_name':([11,24,],[28,28,]),'param_type':([11,24,],[30,30,]),'param_delete':([11,24,],[32,32,]),'param_add':([11,24,],[33,33,]),'lista_rmdisk':([12,],[35,]),'parametros_rmdisk':([12,35,],[36,49,]),'entero_negativo':([57,],[68,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,52 +27,49 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> comandos","S'",1,None,None,None),
-  ('comandos -> comando_mkdisk','comandos',1,'p_comandos','interprete.py',72),
-  ('comandos -> comando_execute','comandos',1,'p_comandos','interprete.py',73),
-  ('comandos -> comando_rep','comandos',1,'p_comandos','interprete.py',74),
-  ('comandos -> empty_production','comandos',1,'p_comandos','interprete.py',75),
-  ('comandos -> comando_fdisk','comandos',1,'p_comandos','interprete.py',76),
-  ('comandos -> comando_rmdisk','comandos',1,'p_comandos','interprete.py',77),
-  ('empty_production -> <empty>','empty_production',0,'p_empty_production','interprete.py',82),
-  ('comando_mkdisk -> MKDISK lista_mkdisk','comando_mkdisk',2,'p_comando_mkdisk','interprete.py',88),
-  ('lista_mkdisk -> lista_mkdisk parametros_mkdisk','lista_mkdisk',2,'p_lista_mkdisk','interprete.py',93),
-  ('lista_mkdisk -> parametros_mkdisk','lista_mkdisk',1,'p_lista_mkdisk','interprete.py',94),
-  ('parametros_mkdisk -> param_size','parametros_mkdisk',1,'p_parametros_mkdisk','interprete.py',102),
-  ('parametros_mkdisk -> param_unit','parametros_mkdisk',1,'p_parametros_mkdisk','interprete.py',103),
-  ('parametros_mkdisk -> param_path','parametros_mkdisk',1,'p_parametros_mkdisk','interprete.py',104),
-  ('parametros_mkdisk -> param_fit','parametros_mkdisk',1,'p_parametros_mkdisk','interprete.py',105),
-  ('comando_rmdisk -> RMDISK lista_rmdisk','comando_rmdisk',2,'p_comando_rmdisk','interprete.py',110),
-  ('lista_rmdisk -> lista_rmdisk parametros_rmdisk','lista_rmdisk',2,'p_lista_rmdisk','interprete.py',115),
-  ('lista_rmdisk -> parametros_rmdisk','lista_rmdisk',1,'p_lista_rmdisk','interprete.py',116),
-  ('parametros_rmdisk -> param_path','parametros_rmdisk',1,'p_parametros_rmdisk','interprete.py',124),
-  ('comando_execute -> EXECUTE lista_execute','comando_execute',2,'p_comando_execute','interprete.py',129),
-  ('lista_execute -> lista_execute parametros_execute','lista_execute',2,'p_lista_execute','interprete.py',136),
-  ('lista_execute -> parametros_execute','lista_execute',1,'p_lista_execute','interprete.py',137),
-  ('parametros_execute -> param_path','parametros_execute',1,'p_parametros_execute','interprete.py',145),
-  ('comando_rep -> REP','comando_rep',1,'p_comando_rep','interprete.py',150),
-  ('comando_fdisk -> FDISK lista_fdisk','comando_fdisk',2,'p_comando_fdisk','interprete.py',155),
-  ('lista_fdisk -> lista_fdisk parametros_fdisk','lista_fdisk',2,'p_lista_fdisk','interprete.py',159),
-  ('lista_fdisk -> parametros_fdisk','lista_fdisk',1,'p_lista_fdisk','interprete.py',160),
-  ('parametros_fdisk -> param_size','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',168),
-  ('parametros_fdisk -> param_path','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',169),
-  ('parametros_fdisk -> param_name','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',170),
-  ('parametros_fdisk -> param_unit','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',171),
-  ('parametros_fdisk -> param_type','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',172),
-  ('parametros_fdisk -> param_fit','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',173),
-  ('parametros_fdisk -> param_delete','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',174),
-  ('parametros_fdisk -> param_add','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',175),
-  ('param_size -> GUION SIZE IGUAL ENTERO','param_size',4,'p_param_size','interprete.py',180),
-  ('param_path -> GUION PATH IGUAL CADENA','param_path',4,'p_param_path','interprete.py',184),
-  ('param_path -> GUION PATH IGUAL ID','param_path',4,'p_param_path','interprete.py',185),
-  ('param_unit -> GUION UNIT IGUAL CADENA','param_unit',4,'p_param_unit','interprete.py',189),
-  ('param_unit -> GUION UNIT IGUAL ID','param_unit',4,'p_param_unit','interprete.py',190),
-  ('param_name -> GUION NAME IGUAL CADENA','param_name',4,'p_param_name','interprete.py',194),
-  ('param_name -> GUION NAME IGUAL ID','param_name',4,'p_param_name','interprete.py',195),
-  ('param_fit -> GUION FIT IGUAL CADENA','param_fit',4,'p_param_fit','interprete.py',199),
-  ('param_fit -> GUION FIT IGUAL ID','param_fit',4,'p_param_fit','interprete.py',200),
-  ('param_type -> GUION TYPE IGUAL CADENA','param_type',4,'p_param_type','interprete.py',204),
-  ('param_type -> GUION TYPE IGUAL ID','param_type',4,'p_param_type','interprete.py',205),
-  ('param_delete -> GUION DELETE IGUAL CADENA','param_delete',4,'p_param_delete','interprete.py',209),
-  ('param_delete -> GUION DELETE IGUAL ID','param_delete',4,'p_param_delete','interprete.py',210),
-  ('param_add -> GUION ADD IGUAL ENTERO','param_add',4,'p_param_add','interprete.py',214),
+  ('comandos -> comando_mkdisk','comandos',1,'p_comandos','interprete.py',84),
+  ('comandos -> comando_execute','comandos',1,'p_comandos','interprete.py',85),
+  ('comandos -> comando_rep','comandos',1,'p_comandos','interprete.py',86),
+  ('comandos -> empty_production','comandos',1,'p_comandos','interprete.py',87),
+  ('comandos -> comando_fdisk','comandos',1,'p_comandos','interprete.py',88),
+  ('comandos -> comando_rmdisk','comandos',1,'p_comandos','interprete.py',89),
+  ('empty_production -> <empty>','empty_production',0,'p_empty_production','interprete.py',94),
+  ('comando_mkdisk -> MKDISK lista_mkdisk','comando_mkdisk',2,'p_comando_mkdisk','interprete.py',100),
+  ('lista_mkdisk -> lista_mkdisk parametros_mkdisk','lista_mkdisk',2,'p_lista_mkdisk','interprete.py',105),
+  ('lista_mkdisk -> parametros_mkdisk','lista_mkdisk',1,'p_lista_mkdisk','interprete.py',106),
+  ('parametros_mkdisk -> param_size','parametros_mkdisk',1,'p_parametros_mkdisk','interprete.py',114),
+  ('parametros_mkdisk -> param_unit','parametros_mkdisk',1,'p_parametros_mkdisk','interprete.py',115),
+  ('parametros_mkdisk -> param_path','parametros_mkdisk',1,'p_parametros_mkdisk','interprete.py',116),
+  ('parametros_mkdisk -> param_fit','parametros_mkdisk',1,'p_parametros_mkdisk','interprete.py',117),
+  ('comando_rmdisk -> RMDISK lista_rmdisk','comando_rmdisk',2,'p_comando_rmdisk','interprete.py',122),
+  ('lista_rmdisk -> lista_rmdisk parametros_rmdisk','lista_rmdisk',2,'p_lista_rmdisk','interprete.py',127),
+  ('lista_rmdisk -> parametros_rmdisk','lista_rmdisk',1,'p_lista_rmdisk','interprete.py',128),
+  ('parametros_rmdisk -> param_path','parametros_rmdisk',1,'p_parametros_rmdisk','interprete.py',136),
+  ('comando_execute -> EXECUTE lista_execute','comando_execute',2,'p_comando_execute','interprete.py',141),
+  ('lista_execute -> lista_execute parametros_execute','lista_execute',2,'p_lista_execute','interprete.py',148),
+  ('lista_execute -> parametros_execute','lista_execute',1,'p_lista_execute','interprete.py',149),
+  ('parametros_execute -> param_path','parametros_execute',1,'p_parametros_execute','interprete.py',157),
+  ('comando_rep -> REP','comando_rep',1,'p_comando_rep','interprete.py',162),
+  ('comando_fdisk -> FDISK lista_fdisk','comando_fdisk',2,'p_comando_fdisk','interprete.py',167),
+  ('lista_fdisk -> lista_fdisk parametros_fdisk','lista_fdisk',2,'p_lista_fdisk','interprete.py',171),
+  ('lista_fdisk -> parametros_fdisk','lista_fdisk',1,'p_lista_fdisk','interprete.py',172),
+  ('parametros_fdisk -> param_size','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',180),
+  ('parametros_fdisk -> param_path','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',181),
+  ('parametros_fdisk -> param_name','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',182),
+  ('parametros_fdisk -> param_unit','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',183),
+  ('parametros_fdisk -> param_type','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',184),
+  ('parametros_fdisk -> param_fit','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',185),
+  ('parametros_fdisk -> param_delete','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',186),
+  ('parametros_fdisk -> param_add','parametros_fdisk',1,'p_parametros_fdisk','interprete.py',187),
+  ('param_size -> GUION SIZE IGUAL ENTERO','param_size',4,'p_param_size','interprete.py',192),
+  ('param_path -> GUION PATH IGUAL CADENA_FILE_PATH','param_path',4,'p_param_path','interprete.py',196),
+  ('param_path -> GUION PATH IGUAL FILE_PATH','param_path',4,'p_param_path','interprete.py',197),
+  ('param_unit -> GUION UNIT IGUAL ID','param_unit',4,'p_param_unit','interprete.py',201),
+  ('param_name -> GUION NAME IGUAL ID','param_name',4,'p_param_name','interprete.py',205),
+  ('param_fit -> GUION FIT IGUAL ID','param_fit',4,'p_param_fit','interprete.py',209),
+  ('param_type -> GUION TYPE IGUAL ID','param_type',4,'p_param_type','interprete.py',213),
+  ('param_delete -> GUION DELETE IGUAL ID','param_delete',4,'p_param_delete','interprete.py',217),
+  ('param_add -> GUION ADD IGUAL ENTERO','param_add',4,'p_param_add','interprete.py',221),
+  ('param_add -> GUION ADD IGUAL entero_negativo','param_add',4,'p_param_add','interprete.py',222),
+  ('entero_negativo -> GUION ENTERO','entero_negativo',2,'p_entero_negativo','interprete.py',228),
 ]

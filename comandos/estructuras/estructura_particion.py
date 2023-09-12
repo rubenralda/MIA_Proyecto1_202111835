@@ -30,3 +30,60 @@ class Particion(EstructuraBase):
         estructura_ebr = Ebr(False, "W", self.start, 0, -1, "")
         archivo_binario.seek(self.start)
         archivo_binario.write(estructura_ebr.get_bytes())
+
+    def crear_particion_logica(self, archivo_binario, particion:Ebr):
+        if self.tipo != "E":
+            print("--Error: No se puede crear la particion logica--")
+            return False
+        estructura_ebr = Ebr(False, "W", self.start, 0, -1, "")
+        archivo_binario.seek(self.start)
+        estructura_ebr.set_bytes(archivo_binario)
+        if not estructura_ebr.status:
+            # falta comprobar si despues de eliminar la primera particion que busque si cabe en este espacio
+            # por el momento si esta vacia siempre va escribir aqui independiente del fit
+            particion.start = self.start
+            particion.siguiente = estructura_ebr.siguiente
+            archivo_binario.seek(self.start)
+            archivo_binario.write(particion.get_bytes())
+            print("\n--Particion logica creada--\n")
+            return True
+        else:
+            tamano_particion = self.start + self.s
+            if self.fit == "F":
+                estructura_ebr.crear_particion_siguiente_ff(archivo_binario, particion, tamano_particion)
+            elif self.fit == "B":
+                estructura_ebr.crear_particion_siguiente_bf(archivo_binario, particion, tamano_particion, tamano_particion, estructura_ebr)
+            elif self.fit == "W":
+                estructura_ebr.crear_particion_siguiente_wf(archivo_binario, particion, tamano_particion, 0, estructura_ebr)
+            return True
+    
+    def buscar_particion_logica(self, name: str, archivo_binario):
+        if self.tipo != "E":
+            return False
+        estructura_ebr = Ebr(False, "W", self.start, 0, -1, "")
+        archivo_binario.seek(self.start)
+        estructura_ebr.set_bytes(archivo_binario)
+        return estructura_ebr.buscar_particion(name, archivo_binario)
+    
+    def eliminar_particion_logica(self, name:str, archivo_binario):
+        if self.tipo != "E":
+            return False
+        estructura_ebr = Ebr(False, "W", self.start, 0, -1, "")
+        archivo_binario.seek(self.start)
+        estructura_ebr.set_bytes(archivo_binario)
+        if estructura_ebr.status:
+            if estructura_ebr.name == name:
+                estructura_ebr.status = False
+                # cambio el inicial
+                archivo_binario.seek(self.start)
+                archivo_binario.write(estructura_ebr.get_bytes())
+                return True
+        return estructura_ebr.eliminar_particion(name, archivo_binario)
+    
+    def add_particion_logica(self, name: str, archivo_binario, add: str):
+        if self.tipo != "E":
+            return False
+        estructura_ebr = Ebr(False, "W", self.start, 0, -1, "")
+        archivo_binario.seek(self.start)
+        estructura_ebr.set_bytes(archivo_binario)
+        return estructura_ebr.add_particion(name, archivo_binario, add, self.s)

@@ -1,6 +1,6 @@
 from .estructura_base import EstructuraBase
 from .estructura_particion import Particion
-
+from .estructura_ebr import Ebr
 
 class Mbr(EstructuraBase):
 
@@ -26,11 +26,17 @@ class Mbr(EstructuraBase):
             particion.set_bytes(archivo_binario)
 
     # True si existe, False si no
-    def buscar_particion(self, name: str):
+    def buscar_particion(self, name: str, archivo_binario):
+        largo_nombre = len(name)
+        while(largo_nombre < 16):
+            name += "\0"
+            largo_nombre += 1
         for particion in self.particiones:
             if particion.status == "V":
                 if particion.name == name:
                     return True
+                if particion.tipo == "E":
+                    return particion.buscar_particion_logica(name, archivo_binario)
         return False
 
     # Verifica si ya existe solo hay una extendida y ejecuta el fit del disco
@@ -39,21 +45,24 @@ class Mbr(EstructuraBase):
             for particion in self.particiones:
                 if particion.status == "V":
                     if particion.tipo == "E":
-                        return True
+                        particion_logica = Ebr(True, fit, 0, size, -1, name)
+                        return particion.crear_particion_logica(archivo_binario, particion_logica)
+            print("--Error: No hay particion extendida--")
+            return False
         else:  # particion Extendidia o primaria
             if tipo == "E": # verifico si no existe ya una
                 for particion in self.particiones:
                     if particion.status == "V":
                         if particion.tipo == "E":
-                            print("Ya existe una particion extendida")
+                            print("--Error: Ya existe una particion extendida--")
                             return False
             if self.fit == "F":  # firt fit
-                print("entro")
                 return self.crear_particion_ff(size, name, tipo, fit, archivo_binario)
             elif self.fit == "B":  # best fit
                 return self.crear_particion_bf(size, name, tipo, fit, archivo_binario)
             elif self.fit == "W":  # worst fit
                 return self.crear_particion_wf(size, name, tipo, fit, archivo_binario)
+            return False
 
     # Crea una particion con primer ajuste (first fit)
     def crear_particion_ff(self, size_particion: int, name_particion: str, tipo_particion: str, fit_particion: str, archivo_binario):
@@ -74,16 +83,19 @@ class Mbr(EstructuraBase):
                             if tipo_particion == "E":
                                 nueva_particion.crear_extendida(archivo_binario)
                             self.particiones[indice_particion] = nueva_particion
+                            print("\n--Particion creada--\n")
                             return True
                     if start + size_particion <= self.tamano: # por si es la ultima particion
                         nueva_particion.start = start
                         if tipo_particion == "E":
                             nueva_particion.crear_extendida(archivo_binario)
                         self.particiones[indice_particion] = nueva_particion
+                        print("\n--Particion creada--\n")
                         return True
                 except:
                     continue
-            start += self.particiones[indice_particion].s    
+            start += self.particiones[indice_particion].s
+        print("--Error: no hay espacio para crear la particion E o P--") 
         return False
     
     # Crear particion con el mejor ajuste (Best Fit)
@@ -93,11 +105,6 @@ class Mbr(EstructuraBase):
         while (largo_nombre < 16):
             name_particion += "\0"
             largo_nombre += 1
-        espacio = {
-            "tamano" : 0,
-            "indice_particion" : 0,
-            "inicio" : 0
-        }
         espacios = []
         nueva_particion = Particion("V", tipo_particion, fit_particion, start, size_particion, name_particion)
         for indice_particion in range(4):
@@ -105,23 +112,32 @@ class Mbr(EstructuraBase):
                 try:
                     for resto in range(indice_particion, 4):
                         if self.particiones[resto].status == "V":
+                            # validar para que se corran las particiones, es decir una particion 2 pueda ir despues de la 4
                             if self.particiones[resto].start <= start + size_particion:
                                 raise
-                            espacio["tamano"] = self.particiones[resto].start - start
-                            espacio["indice_particion"] = indice_particion
-                            espacio["inicio"] = start
-                            espacios.append(espacio)
+                            nuevo_espacio = {
+                                "tamano": self.particiones[resto].start - start,
+                                "indice_particion" : indice_particion,
+                                "inicio" : start
+                            }
+                            espacios.append(nuevo_espacio)
                             raise
                     if start + size_particion <= self.tamano: # por si es la ultima particion
-                        espacio["tamano"] = self.tamano - start
-                        espacio["indice_particion"] = indice_particion
-                        espacio["inicio"] = start
-                        espacios.append(espacio)
+                        nuevo_espacio = {
+                            "tamano": self.tamano - start,
+                            "indice_particion" : indice_particion,
+                            "inicio" : start
+                        }
+                        espacios.append(nuevo_espacio)
+                        break
+                    print("--Error: La particion es muy grande--")
+                    return False
                 except:
                     continue
             start += self.particiones[indice_particion].s
         # Ahora con los espacios libres guardados vemos el mas pequeño de todos
         if len(espacios) == 0:
+            print("--Error: no hay espacio para crear la particion E o P--")
             return False
         espacio_short = espacios[0]
         for espaciolibre in espacios:
@@ -131,9 +147,8 @@ class Mbr(EstructuraBase):
         if tipo_particion == "E":
             nueva_particion.crear_extendida(archivo_binario)
         self.particiones[espacio_short["indice_particion"]] = nueva_particion
+        print("\n--Particion creada--\n")
         return True
-    
-     # Crear particion con el peor ajuste (worst Fit)
     
     # Crear particion con el peor ajuste (worst Fit)
     def crear_particion_wf(self, size_particion: int, name_particion: str, tipo_particion: str, fit_particion: str, archivo_binario):
@@ -142,11 +157,6 @@ class Mbr(EstructuraBase):
         while (largo_nombre < 16):
             name_particion += "\0"
             largo_nombre += 1
-        espacio = {
-            "tamano" : 0,
-            "indice_particion" : 0,
-            "inicio" : 0
-        }
         espacios = []
         nueva_particion = Particion("V", tipo_particion, fit_particion, start, size_particion, name_particion)
         for indice_particion in range(4):
@@ -156,21 +166,29 @@ class Mbr(EstructuraBase):
                         if self.particiones[resto].status == "V":
                             if self.particiones[resto].start <= start + size_particion:
                                 raise
-                            espacio["tamano"] = self.particiones[resto].start - start
-                            espacio["indice_particion"] = indice_particion
-                            espacio["inicio"] = start
-                            espacios.append(espacio)
+                            nuevo_espacio = {
+                                "tamano": self.particiones[resto].start - start,
+                                "indice_particion" : indice_particion,
+                                "inicio" : start
+                            }
+                            espacios.append(nuevo_espacio)
                             raise
                     if start + size_particion <= self.tamano: # por si es la ultima particion
-                        espacio["tamano"] = self.tamano - start
-                        espacio["indice_particion"] = indice_particion
-                        espacio["inicio"] = start
-                        espacios.append(espacio)
+                        nuevo_espacio = {
+                            "tamano": self.tamano - start,
+                            "indice_particion" : indice_particion,
+                            "inicio" : start
+                        }
+                        espacios.append(nuevo_espacio)
+                        break
+                    print("--Error: La particion es muy grande--")
+                    return False
                 except:
                     continue
             start += self.particiones[indice_particion].s
         # Ahora con los espacios libres guardados vemos el mas grande de todos
         if len(espacios) == 0:
+            print("--Error: no hay espacio para crear la particion E o P--")
             return False
         espacio__grande = espacios[0]
         for espaciolibre in espacios:
@@ -180,4 +198,50 @@ class Mbr(EstructuraBase):
         if tipo_particion == "E":
             nueva_particion.crear_extendida(archivo_binario)
         self.particiones[espacio__grande["indice_particion"]] = nueva_particion
+        print("\n--Particion creada--\n")
         return True
+    
+    # True si fue exitoso, False si no
+    def eliminar_particion(self, name: str, archivo_binario):
+        largo_nombre = len(name)
+        while(largo_nombre < 16):
+            name += "\0"
+            largo_nombre += 1
+        i = 0
+        for particion in self.particiones:
+            if particion.status == "V":
+                if particion.name == name:
+                    particion.status = "F"
+                    if particion.tipo == "E":
+                        archivo_binario.seek(particion.start)
+                        archivo_binario.write(b'\x00'*particion.s)
+                    particion.tipo = "P"
+                    return True                
+                if particion.tipo == "E":
+                    return particion.eliminar_particion_logica(name, archivo_binario)
+            i += 1
+        return False
+    
+    # True si existe, False si no
+    def add_particion(self, name: str, archivo_binario, add: int):
+        largo_nombre = len(name)
+        while(largo_nombre < 16):
+            name += "\0"
+            largo_nombre += 1
+        for i, particion in enumerate(self.particiones):
+            if particion.status == "V":
+                if particion.name == name:
+                    nuevo_size = particion.s + add
+                    if nuevo_size < 0:
+                        return False
+                    elif i == 3:
+                        if nuevo_size > self.tamano:
+                            return False
+                    else:
+                        if nuevo_size >= self.particiones[i+1].start:
+                            return False
+                    self.particiones[i].s = nuevo_size
+                    return True
+                if particion.tipo == "E":
+                    return particion.add_particion_logica(name, archivo_binario, add)
+        return False

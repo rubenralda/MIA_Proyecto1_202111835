@@ -12,15 +12,15 @@ class Execute(Comando):
         self.lexer.lineno = 1
         direccion = self.parametros.get("path")
         if direccion == None:
-            print('Faltan parametros')
+            print('--Error: Faltan parametros--')
             return False
         if not os.path.isfile(direccion):
-            print("La ruta no es un archivo valido")
+            print("--Error: La ruta no es un archivo valido--")
             return False
         with open(direccion, "r") as comandos:
             for linea in comandos.readlines():
                 resultado = self.parser.parse(linea)
                 if resultado != None:
-                    print('--->Comando a punto ejecutar: ', linea)
+                    print('Comando a ejecutar -> ', linea.replace("\n", ""))
                     resultado.ejecutar()
             #return comandos.readlines()

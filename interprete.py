@@ -26,12 +26,19 @@ palabras_reservadas = {
 
 tokens = [
     'ENTERO',
-    'CADENA',
     'ID',
+    'CADENA_FILE_PATH',
     'IGUAL',
-    'GUION'
+    'GUION',
+    'FILE_PATH'
 
 ] + list(palabras_reservadas.values())
+
+def t_COMMENT(t):
+    r'\#.*'
+    print(t.value)
+    # No hacer nada en la acción para ignorar el comentario
+    pass
 
 t_IGUAL = r'\='
 t_GUION = r'\-'
@@ -45,14 +52,19 @@ def t_ENTERO(t):
         t.value = 0
     return t
 
-def t_CADENA(t):
-    r'\"(.|\n)*?\"'
+def t_ID(t): # puede ser una letra o un nombre
+    r'[a-zA-Z_][a-zA-z0-9_]*'
+    c = t.value
+    t.type = palabras_reservadas.get(c.lower(), 'ID')
+    return t
+
+def t_CADENA_FILE_PATH(t):
+    r'"\.?/([^/]+/)*([a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z0-9]+)?"'
     t.value = t.value[1:-1] # remuevo las comillas
     return t
 
-def t_ID(t):
-    r'[a-zA-Z_/][a-zA-z0-9_/.]*'
-    t.type = palabras_reservadas.get(t.value, 'ID')
+def t_FILE_PATH(t):
+    r'\.?/([a-z-A-Z_][a-zA-Z0-9_]*/)*([a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z0-9]+)?'
     return t
 
 def t_newline(t):
@@ -181,38 +193,52 @@ def p_param_size(t):
     t[0] = {'size': t[4]}
 
 def p_param_path(t):
-    '''param_path : GUION PATH IGUAL CADENA
-                |  GUION PATH IGUAL ID'''
+    '''param_path : GUION PATH IGUAL CADENA_FILE_PATH
+                |  GUION PATH IGUAL FILE_PATH'''
     t[0] = {'path': t[4]}
 
 def p_param_unit(t):
-    '''param_unit : GUION UNIT IGUAL CADENA
-                |  GUION UNIT IGUAL ID'''
+    '''param_unit : GUION UNIT IGUAL ID'''
     t[0] = {'unit': t[4]}
 
 def p_param_name(t):
-    '''param_name : GUION NAME IGUAL CADENA
-                |  GUION NAME IGUAL ID'''
+    '''param_name : GUION NAME IGUAL ID'''
     t[0] = {'name': t[4]}
 
 def p_param_fit(t):
-    '''param_fit : GUION FIT IGUAL CADENA
-                |  GUION FIT IGUAL ID'''
+    '''param_fit : GUION FIT IGUAL ID'''
     t[0] = {'fit': t[4]}
 
 def p_param_type(t):
-    '''param_type : GUION TYPE IGUAL CADENA
-                |  GUION TYPE IGUAL ID'''
+    '''param_type : GUION TYPE IGUAL ID'''
     t[0] = {'type': t[4]}
 
 def p_param_delete(t):
-    '''param_delete : GUION DELETE IGUAL CADENA
-                |  GUION DELETE IGUAL ID'''
+    '''param_delete : GUION DELETE IGUAL ID'''
     t[0] = {'delete': t[4]}
 
 def p_param_add(t):
-    'param_add : GUION ADD IGUAL ENTERO'
+    '''param_add : GUION ADD IGUAL ENTERO
+                | GUION ADD IGUAL entero_negativo'''
     t[0] = {'add': t[4]}
+
+# gramaticas extra
+
+def p_entero_negativo(t):
+    'entero_negativo : GUION ENTERO %prec GUION'
+    t[0] = -t[2]
+
+# Definición de precedencia
+precedence = (
+    ('left', 'GUION'),
+)
+
+# Regla de manejo de errores
+def p_error(p):
+    if p:
+        print(f"Error de sintaxis en el token '{p.value}' en la línea {p.lineno}, posición {p.lexpos}")
+    else:
+        print("Error de sintaxis en la entrada")
 
 lexer = lex.lex()
 
