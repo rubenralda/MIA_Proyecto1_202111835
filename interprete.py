@@ -5,6 +5,7 @@ from comandos.comando_execute import Execute
 from comandos.comando_rep import Rep
 from comandos.comando_fdisk import Fdisk
 from comandos.comando_rmdisk import Rmdisk
+from comandos.comando_mount import Mount
 #-------------------------------ANALIZADOR LEXICO---------------------------------------------------------------------
 errores_lexicos = []
 
@@ -14,6 +15,7 @@ palabras_reservadas = {
     'rmdisk' : 'RMDISK',
     'fdisk' : 'FDISK',
     'rep': 'REP',
+    'mount': 'MOUNT',
     'path': 'PATH',
     'size': 'SIZE',
     'unit' : 'UNIT',
@@ -155,6 +157,26 @@ def p_lista_execute(t):
 
 def p_parametros_execute(t):
     '''parametros_execute : param_path'''
+    t[0] = t[1]
+
+#------------comando mount----------
+def p_comando_mount(t):
+    'comando_mount : MOUNT lista_mount'
+    # se manda el parser para ejecutar todos los comandos del archivo
+    t[0] = Mount(t[2])
+
+def p_lista_mount(t):
+    '''lista_mount : lista_mount parametros_mount
+                | parametros_mount'''
+    if len(t) != 2:
+        t[1].update(t[2])
+        t[0] = t[1]
+    else:
+        t[0] = t[1]
+
+def p_parametros_mount(t):
+    '''parametros_mount : param_path
+                | param_name'''
     t[0] = t[1]
 
 #-------comando rep---------

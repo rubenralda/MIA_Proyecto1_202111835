@@ -19,6 +19,7 @@ class Fdisk(Comando):
             return False
         delete = self.parametros.get("delete")
         if delete != None: # eliminar particion
+            # FALTA PONER CONFIRMACION
             if delete.lower() != "full":
                 print("--Error: El valor de delete es incorrecto--")
                 return False

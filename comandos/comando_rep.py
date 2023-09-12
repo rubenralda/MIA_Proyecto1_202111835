@@ -5,6 +5,9 @@ import time
 
 class Rep(Comando):
 
+    def __init__(self) -> None:
+        super().__init__()
+
     def ejecutar(self):
         with open("/home/rubenralda/escritorio/Disco1.dsk", "rb") as archivo_binario:
             estruct_mbr = Mbr(0, 0, 0, 0)
