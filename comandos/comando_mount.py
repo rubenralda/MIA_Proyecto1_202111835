@@ -26,10 +26,17 @@ class Mount(Comando):
                 print("--Error: La particion no existe--")
                 return False
             tipo_clase = "L"
+            size = 0
+            start = 0
             if isinstance(particion, Particion):
                 if particion.tipo == "E":
                     print("--Error: No se puede montar una particion extendida--")
                     return False
                 tipo_clase = "P"
-            agregar_particion(particion, path_particion, tipo_clase, name)
+                size = particion.s
+                start = particion.start
+            else:
+                size = particion.size - 30 # 30 del size de ebr
+                start = particion.start + 30 # 30 despues del ebr
+            agregar_particion(particion, path_particion, tipo_clase, name, size, start, archivo_binario)
             print("\n--Particion agregada--\n")

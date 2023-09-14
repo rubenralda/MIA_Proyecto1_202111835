@@ -8,6 +8,7 @@ from comandos.comando_rmdisk import Rmdisk
 from comandos.comando_mount import Mount
 from comandos.comando_mount_list import MountList
 from comandos.comando_unmount import Unmount
+from comandos.comando_mkfs import Mkfs
 #-------------------------------ANALIZADOR LEXICO---------------------------------------------------------------------
 errores_lexicos = []
 
@@ -20,6 +21,7 @@ palabras_reservadas = {
     'mount': 'MOUNT',
     'mountlist': 'MOUNT_LIST',
     'unmount' : 'UNMOUNT',
+    'mkfs' : 'MKFS',
     'path': 'PATH',
     'size': 'SIZE',
     'unit' : 'UNIT',
@@ -28,7 +30,8 @@ palabras_reservadas = {
     'type' : 'TYPE',
     'delete' : 'DELETE',
     'add' : 'ADD',
-    'id' : 'ID_WORD'
+    'id' : 'ID_WORD',
+    'fs' : 'FS',
 }
 
 tokens = [
@@ -38,7 +41,9 @@ tokens = [
     'IGUAL',
     'GUION',
     'FILE_PATH',
-    'ID_PAR'
+    'ID_PAR',
+    '2FS',
+    '3FS'
 
 ] + list(palabras_reservadas.values())
 
@@ -50,6 +55,8 @@ def t_COMMENT(t):
 
 t_IGUAL = r'\='
 t_GUION = r'\-'
+t_2FS = r'2fs'
+t_3FS = r'3fs'
 
 def t_ID_PAR(t):
     r'35[a-zA-z0-9_]+'
@@ -101,7 +108,8 @@ def p_comandos(t):
                 | comando_rmdisk
                 | comando_mount
                 | comando_mountlist
-                | comando_unmount'''
+                | comando_unmount
+                | comando_mkfs'''
     t[0] = t[1]
 
 def p_empty_production(t):
@@ -259,6 +267,26 @@ def p_parametros_unmount(t):
     '''parametros_unmount : param_id'''
     t[0] = t[1]
 
+#------------comando mkfs----------
+def p_comando_mkfs(t):
+    'comando_mkfs : MKFS lista_mkfs'
+    t[0] = Mkfs(t[2])
+
+def p_lista_mkfs(t):
+    '''lista_mkfs : lista_mkfs parametros_mkfs
+                | parametros_mkfs'''
+    if len(t) != 2:
+        t[1].update(t[2])
+        t[0] = t[1]
+    else:
+        t[0] = t[1]
+
+def p_parametros_mkfs(t):
+    '''parametros_mkfs : param_id
+                | param_type
+                | param_fs'''
+    t[0] = t[1]
+
 #------------Parametros------------
 def p_param_size(t):
     'param_size : GUION SIZE IGUAL ENTERO'
@@ -297,6 +325,11 @@ def p_param_add(t):
 def p_param_id(t):
     '''param_id : GUION ID_WORD IGUAL ID_PAR'''
     t[0] = {'id': t[4]}
+
+def p_param_fs(t):
+    '''param_fs : GUION FS IGUAL 2FS
+                | GUION FS IGUAL 3FS'''
+    t[0] = {'fs': t[4]}
 
 # gramaticas extra
 

@@ -35,12 +35,28 @@ class Rep(Comando):
                     estruct_mbr = Mbr(0, 0, 0, 0)
                     estruct_mbr.set_bytes(archivo_binario)
                     reporte_graphviz = estruct_mbr.reporte_mbr(archivo_binario)
-                    grafo = Source(reporte_graphviz, format = 'png')
+                    # la parte de format es para obtener la extension del archivo
+                    grafo = Source(reporte_graphviz, format = "jpg") # os.path.splitext(os.path.basename(path_particion))[1].replace(".", "")
                     # print(reporte_graphviz)
-                    grafo.render(path_particion, view= True)
+                    grafo.render(path_particion, view= True) # falta quitar el .extension porque se pone doble
                 return True
             case "disk":
-                pass
+                particiones = obtener_particiones()
+                direccion = ""
+                for particion in particiones:
+                    if particion.id == id:
+                        direccion = particion.path_disco
+                if direccion == "":
+                    print("--Error: El ID no existe--") 
+                with open(direccion, "rb") as archivo_binario:
+                    estruct_mbr = Mbr(0, 0, 0, 0)
+                    estruct_mbr.set_bytes(archivo_binario)
+                    reporte_graphviz = estruct_mbr.reporte_disk(archivo_binario)
+                    #print(reporte_graphviz)
+                    # la parte de format es para obtener la extension del archivo
+                    grafo = Source(reporte_graphviz, format = "jpg") # os.path.splitext(os.path.basename(path_particion))[1].replace(".", "")
+                    # print(reporte_graphviz)
+                    grafo.render(path_particion, view= True) # falta quitar el .extension porque se pone doble
             case _:
                 print("--Error: el valor del parametro name es incorrecto--")
                 return False

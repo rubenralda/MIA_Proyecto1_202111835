@@ -170,32 +170,61 @@ class Ebr(EstructuraBase):
             return ebr_siguiente.add_particion(name, archivo_binario, add, final)
        
     def reporte_logica(self, archivo_binario) -> str:
-        reporte = '''
-            <tr>
-            <td bgcolor="/rdylgn11/5:/rdylgn11/5"><b>Particion Logica</b></td>
-            <td bgcolor="/rdylgn11/5:/rdylgn11/5"><b> </b></td>
-            </tr>
-            <tr>
-            <td>part_status</td><td>{}</td>
-            </tr>
-            <tr>
-            <td>part_next</td><td>{}</td>
-            </tr>
-            <tr>
-            <td>part_fit</td><td>{}</td>
-            </tr>
-            <tr>
-            <td>part_start</td><td>{}</td>
-            </tr>
-            <tr>
-            <td>part_size</td><td>{}</td>
-            </tr>
-            <tr>
-            <td>part_name</td><td>{}</td>
-            </tr>'''.format(self.status, self.siguiente, self.fit, self.start, self.size, self.name.replace("\0", ""))
+        reporte = ""
+        if self.status:
+            reporte += '''
+                <tr>
+                <td bgcolor="/rdylgn11/5:/rdylgn11/5"><b>Particion Logica</b></td>
+                <td bgcolor="/rdylgn11/5:/rdylgn11/5"><b> </b></td>
+                </tr>
+                <tr>
+                <td>part_status</td><td>{}</td>
+                </tr>
+                <tr>
+                <td>part_next</td><td>{}</td>
+                </tr>
+                <tr>
+                <td>part_fit</td><td>{}</td>
+                </tr>
+                <tr>
+                <td>part_start</td><td>{}</td>
+                </tr>
+                <tr>
+                <td>part_size</td><td>{}</td>
+                </tr>
+                <tr>
+                <td>part_name</td><td>{}</td>
+                </tr>'''.format(self.status, self.siguiente, self.fit, self.start, self.size, self.name.replace("\0", ""))
         if self.siguiente != -1:
             archivo_binario.seek(self.siguiente)
             ebr_siguiente = Ebr(False, "W", 0, 0, -1, "")
             ebr_siguiente.set_bytes(archivo_binario) # obtengo el ebr siguiente
             reporte += ebr_siguiente.reporte_logica(archivo_binario)
         return reporte
+    
+    def reporte_logica_disk(self, archivo_binario, size_archivo: int, size_particion : int):
+        reporte = ""
+        conteo = 1
+        if not self.status:
+            porcentaje = size_particion / size_archivo
+            reporte += '<td>Libre5<BR/>{}%</td>'.format(str(porcentaje*100))
+            conteo += 1
+        else:
+            porcentaje = self.size / size_archivo
+            reporte += '<td>Logica<BR/>{}%</td>'.format(str(porcentaje*100))
+            conteo += 1
+        size_particion -= self.size
+        if self.siguiente != -1:
+            archivo_binario.seek(self.siguiente)
+            ebr_siguiente = Ebr(False, "W", 0, 0, -1, "")
+            ebr_siguiente.set_bytes(archivo_binario) # obtengo el ebr siguiente
+            resultado = ebr_siguiente.reporte_logica_disk(archivo_binario, size_archivo, size_particion)
+            reporte += '<td bgcolor="/rdylgn11/5:/rdylgn11/5">EBR</td>'
+            reporte += resultado["result"]
+            return {"conteo": resultado["conteo"] + 2, "result": reporte}
+        else:
+            porcentaje = size_particion / size_archivo
+            if porcentaje != 0:
+                reporte += '<td>Libre<BR/>{}%</td>'.format(str(porcentaje*100))
+                conteo += 1
+            return {"conteo": conteo, "result": reporte}

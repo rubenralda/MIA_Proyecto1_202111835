@@ -10,10 +10,10 @@ class Mbr(EstructuraBase):
         self.fecha = fecha  # 4 bytes
         self.signature = signature  # 4 bytes
         self.fit = fit  # 1 byte
-        particion1 = Particion("F", "P", "W", 0, 0, "")
-        particion2 = Particion("F", "P", "W", 0, 0, "")
-        particion3 = Particion("F", "P", "W", 0, 0, "")
-        particion4 = Particion("F", "P", "W", 0, 0, "")
+        particion1 = Particion("F", "P", "W", 121, 0, "")
+        particion2 = Particion("F", "P", "W", 121, 0, "")
+        particion3 = Particion("F", "P", "W", 121, 0, "")
+        particion4 = Particion("F", "P", "W", 121, 0, "")
         self.particiones = [particion1, particion2,
                             particion3, particion4]  # array mas facil
 
@@ -280,4 +280,63 @@ class Mbr(EstructuraBase):
         reporte += '''</table>
         >];
 }'''
+        return reporte
+    
+    def reporte_disk(self, archivo_binario) -> str:
+        reporte = '''digraph reporte_del_disk {
+    node [shape=plaintext]
+    disk_f [
+        label=<
+            <table border="0" cellborder="1" cellspacing="0">
+                <tr>
+                    <td bgcolor="/rdylgn6/5:/rdylgn6/5" rowspan="2"><b>MBR</b></td>
+                '''
+        logicas = ""
+
+        start = 121
+        todo_libre = True
+        if self.particiones[0].status == "F":
+            for resto in range(1, 4):
+                if self.particiones[resto].status == "V":
+                    porcentaje_libre = (self.particiones[resto].start - start) / self.tamano
+                    reporte += '''<td rowspan="2">Libre1<BR/>{}%</td>'''.format(str(porcentaje_libre*100))
+                    todo_libre = False
+                    break
+            if todo_libre:
+                porcentaje_libre = 100
+                reporte += '''<td rowspan="2">Libre2<BR/>{}%</td>'''.format(str(porcentaje_libre*100))
+                reporte += '''</tr>'''
+                reporte += logicas
+                reporte += '''</table>
+                >];
+                }'''
+                return reporte
+        for indice_particion in range(4):
+            
+            if self.particiones[indice_particion].status == "V":
+                if self.particiones[indice_particion].tipo == "E":
+                    result = self.particiones[indice_particion].reporte_disk(archivo_binario, self.tamano)
+                    reporte += result["fila"]
+                    logicas = result["extendida"]
+                else:
+                    porcentaje_primaria = self.particiones[indice_particion].s / self.tamano
+                    reporte += '''<td rowspan="2">Primaria<BR/>{}%</td>'''.format(str(porcentaje_primaria*100))
+                try:
+                    for resto in range(indice_particion + 1, 4):
+                        if self.particiones[resto].status == "V":
+                            if self.particiones[resto].start - (self.particiones[indice_particion].start + self.particiones[indice_particion].s) != 0:
+                                porcentaje_libre = (self.particiones[resto].start - (self.particiones[indice_particion].start + self.particiones[indice_particion].s)) / self.tamano
+                                reporte += '''<td rowspan="2">Libre3<BR/>{}%</td>'''.format(str(porcentaje_libre*100))
+                            raise
+                    porcentaje_libre = (self.tamano - (self.particiones[indice_particion].start + self.particiones[indice_particion].s)) / self.tamano
+                    reporte += '''<td rowspan="2">Libre4<BR/>{}%</td>'''.format(str(porcentaje_libre*100))
+                    break
+                except:
+                    start += self.particiones[indice_particion].s
+                    continue
+        reporte += '''</tr>'''
+        reporte += logicas
+        reporte += '''</table>
+        >];
+        }'''
         return reporte

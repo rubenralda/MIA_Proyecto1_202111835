@@ -118,3 +118,17 @@ class Particion(EstructuraBase):
             estructura_ebr.set_bytes(archivo_binario)
             reporte += estructura_ebr.reporte_logica(archivo_binario)
         return reporte
+    
+    def reporte_disk(self, archivo_binario, size_archivo: int):
+        reporte = '''
+            <tr>
+                <td bgcolor="/rdylgn11/5:/rdylgn11/5">EBR</td>
+            '''
+        estructura_ebr = Ebr(False, "W", self.start, 0, -1, "")
+        archivo_binario.seek(self.start)
+        estructura_ebr.set_bytes(archivo_binario)
+        resultado = estructura_ebr.reporte_logica_disk(archivo_binario, size_archivo, self.s) 
+        fila_extendida = '<td bgcolor="/rdylgn11/3:/rdylgn11/3" COLSPAN="{}"><b>Extendida</b></td>'.format(str(resultado["conteo"]))
+        reporte += resultado["result"]
+        reporte += "</tr>"
+        return {"extendida": reporte, "fila" : fila_extendida}
