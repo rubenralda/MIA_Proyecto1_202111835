@@ -1,5 +1,5 @@
 from .estructuras.estructura_tabla_inodos import Inodos
-from .estructuras.estructura_bloques import BloqueCarpetas
+from .estructuras.estructura_bloques import *
 from .estructuras.estructura_journaling import Journaling
 from .comando_base import Comando
 from .estructuras.estructura_superbloque import SuperBloque
@@ -29,6 +29,8 @@ class Mkfs(Comando):
             if particion.id == id:
                 with open(particion.path_disco, "rb+") as archivo_binario:
                     superbloque = SuperBloque(file_system, particion.start, particion.size)
+                    superbloque.bloque_libres_count -= 2 # por la carpeta raiz
+                    superbloque.inodos_libres_count -= 2 # por el inodo raiz
                     archivo_binario.seek(particion.start)
                     archivo_binario.write(superbloque.get_bytes())
                     # escribir el journaling si es ext3
@@ -38,14 +40,14 @@ class Mkfs(Comando):
                             archivo_binario.write(journaling.get_bytes())
                     # escribir el bitmap de inodos
                     archivo_binario.seek(superbloque.bitmap_inodo_start) # si es ext3 ya se sumo el size journaling
-                    archivo_binario.write(1) # inodo del root
-                    for _ in range(1, superbloque.inodos_count):
-                        archivo_binario.write(0)
+                    archivo_binario.write(bytes([1,1])) # inodo del root
+                    for _ in range(2, superbloque.inodos_count + 1):
+                        archivo_binario.write(bytes([0]))
                     # escribir el bitmap de bloques
                     archivo_binario.seek(superbloque.bitmap_bloque_start)
-                    archivo_binario.write(1) # bloque del root
-                    for _ in range(1, superbloque.bloque_count):
-                        archivo_binario.write(0)
+                    archivo_binario.write(bytes([1,1])) # bloque del root
+                    for _ in range(2, superbloque.bloque_count + 1):
+                        archivo_binario.write(bytes([0]))
                     # escribir los inodos
                     inodos = Inodos()
                     archivo_binario.seek(superbloque.inodo_start)
@@ -57,10 +59,6 @@ class Mkfs(Comando):
                         archivo_binario.write(bloque.get_bytes())
 
                     #escribir la carpeta raiz
-                    carpeta_root = BloqueCarpetas()
-                    carpeta_root.contenido[0].inodo = -1
-                    carpeta_root.contenido[0].name = "root"
-
                     inodo_raiz = Inodos()
                     inodo_raiz.uid = 1
                     inodo_raiz.gid = 1
@@ -69,14 +67,39 @@ class Mkfs(Comando):
                     inodo_raiz.ctime = int(time.time())
                     inodo_raiz.mtime= int(time.time())
                     inodo_raiz.tipo = 0
-                    inodo_raiz.permiso = 755
-                    inodo_raiz.bloque[0] = superbloque.bloque_start
-
-                    archivo_binario.seek(superbloque.bloque_start)
-                    archivo_binario.write(carpeta_root.get_bytes())
-
+                    inodo_raiz.permiso = 600
+                    inodo_raiz.bloque[0] = 0 #apunto al bloque carpeta root
                     archivo_binario.seek(superbloque.inodo_start)
                     archivo_binario.write(inodo_raiz.get_bytes())
+
+                    carpeta_root = BloqueCarpetas()
+                    carpeta_root.contenido[0].inodo = 0
+                    carpeta_root.contenido[0].name = "."
+                    carpeta_root.contenido[1].inodo = 0
+                    carpeta_root.contenido[1].name = ".."
+                    carpeta_root.contenido[2].inodo = 1 # inodo 1
+                    carpeta_root.contenido[2].name = "user.txt"
+                    archivo_binario.seek(superbloque.bloque_start)
+                    archivo_binario.write(carpeta_root.get_bytes())
+                    
+                    #escribir el archivo users
+                    inodo_archivo_user = Inodos()
+                    inodo_archivo_user.uid = 1
+                    inodo_archivo_user.gid = 1
+                    inodo_archivo_user.size = 52 # 52 char
+                    inodo_archivo_user.atime = int(time.time())
+                    inodo_archivo_user.ctime = int(time.time())
+                    inodo_archivo_user.mtime= int(time.time())
+                    inodo_archivo_user.tipo = 1 #archivo
+                    inodo_archivo_user.permiso = 600
+                    inodo_archivo_user.bloque[0] = 1 #apunto al bloque archivo users.txt
+                    archivo_binario.seek(superbloque.inodo_start + superbloque.tamano_inodo)
+                    archivo_binario.write(inodo_archivo_user.get_bytes())
+
+                    usuarios_root = "1,G,root      \n1,U,root      ,root      ,123       \n"
+                    archivo_user = BloqueArchivos(usuarios_root) # bloque 1
+                    archivo_binario.seek(superbloque.bloque_start + superbloque.tamano_bloque)
+                    archivo_binario.write(archivo_user.get_bytes())
                     print("\n--Formateo completo--\n")
                     return True
         print("--Error: La particion no existe--")

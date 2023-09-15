@@ -1,4 +1,5 @@
 from .estructuras.estructura_mbr import Mbr
+from .estructuras.estructura_superbloque import SuperBloque
 from .comando_base import Comando
 from .mount import obtener_particiones
 from graphviz import Source
@@ -31,6 +32,7 @@ class Rep(Comando):
                         direccion = particion.path_disco
                 if direccion == "":
                     print("--Error: El ID no existe--") 
+                    return False
                 with open(direccion, "rb") as archivo_binario:
                     estruct_mbr = Mbr(0, 0, 0, 0)
                     estruct_mbr.set_bytes(archivo_binario)
@@ -47,7 +49,8 @@ class Rep(Comando):
                     if particion.id == id:
                         direccion = particion.path_disco
                 if direccion == "":
-                    print("--Error: El ID no existe--") 
+                    print("--Error: El ID no existe--")
+                    return False
                 with open(direccion, "rb") as archivo_binario:
                     estruct_mbr = Mbr(0, 0, 0, 0)
                     estruct_mbr.set_bytes(archivo_binario)
@@ -57,6 +60,65 @@ class Rep(Comando):
                     grafo = Source(reporte_graphviz, format = "jpg") # os.path.splitext(os.path.basename(path_particion))[1].replace(".", "")
                     # print(reporte_graphviz)
                     grafo.render(path_particion, view= True) # falta quitar el .extension porque se pone doble
+            case "sb":
+                particiones = obtener_particiones()
+                direccion = ""
+                inicio = 0
+                for particion in particiones:
+                    if particion.id == id:
+                        direccion = particion.path_disco
+                        inicio = particion.start
+                if direccion == "":
+                    print("--Error: El ID no existe--")
+                    return False
+                with open(direccion, "rb") as archivo_binario:
+                    archivo_binario.seek(inicio)
+                    estruct_sb = SuperBloque(0,0,0)
+                    estruct_sb.set_bytes(archivo_binario)
+                    reporte_graphviz = estruct_sb.reporte_sb()
+                    #print(reporte_graphviz)
+                    # la parte de format es para obtener la extension del archivo
+                    grafo = Source(reporte_graphviz, format = "jpg") # os.path.splitext(os.path.basename(path_particion))[1].replace(".", "")
+                    # print(reporte_graphviz)
+                    grafo.render(path_particion, view= True) # falta quitar el .extension porque se pone doble
+            case "bm_inode":
+                particiones = obtener_particiones()
+                direccion = ""
+                inicio = 0
+                for particion in particiones:
+                    if particion.id == id:
+                        direccion = particion.path_disco
+                        inicio = particion.start
+                if direccion == "":
+                    print("--Error: El ID no existe--")
+                    return False
+                with open(direccion, "rb") as archivo_binario:
+                    archivo_binario.seek(inicio)
+                    estruct_sb = SuperBloque(0,0,0)
+                    estruct_sb.set_bytes(archivo_binario)
+                    reportetxt = estruct_sb.reporte_bm_inodo(archivo_binario)
+                    with open(path_particion, "w+") as archivo_reporte:
+                        archivo_reporte.write(reportetxt)
+                    #print(reportetxt)
+            case "bm_bloc":
+                particiones = obtener_particiones()
+                direccion = ""
+                inicio = 0
+                for particion in particiones:
+                    if particion.id == id:
+                        direccion = particion.path_disco
+                        inicio = particion.start
+                if direccion == "":
+                    print("--Error: El ID no existe--")
+                    return False
+                with open(direccion, "rb") as archivo_binario:
+                    archivo_binario.seek(inicio)
+                    estruct_sb = SuperBloque(0,0,0)
+                    estruct_sb.set_bytes(archivo_binario)
+                    reportetxt = estruct_sb.reporte_bm_bloc(archivo_binario)
+                    with open(path_particion, "w+") as archivo_reporte:
+                        archivo_reporte.write(reportetxt)
+                    #print(reportetxt)  
             case _:
                 print("--Error: el valor del parametro name es incorrecto--")
                 return False

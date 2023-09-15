@@ -14,7 +14,18 @@ class EstructuraBase(ABC):
                 bytes += valor.to_bytes(1, byteorder = 'big')
             elif tipo == 'list':
                 for item in valor:
-                    bytes += item.get_bytes()
+                    tipo2 = type(item).__name__
+                    if tipo2 == 'int':
+                        bytes += item.to_bytes(4, byteorder = 'big', signed = True)
+                    elif tipo2 == 'str':
+                        bytes += item.encode('utf-8')
+                    elif tipo2 == 'bool':
+                        bytes += item.to_bytes(1, byteorder = 'big')
+                    elif tipo2 == 'list':
+                        for item in item:
+                            bytes += item.get_bytes()
+                    else:
+                        bytes += item.get_bytes()
             else:
                 bytes += valor.get_bytes()
         return bytes

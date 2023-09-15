@@ -9,6 +9,7 @@ from comandos.comando_mount import Mount
 from comandos.comando_mount_list import MountList
 from comandos.comando_unmount import Unmount
 from comandos.comando_mkfs import Mkfs
+from comandos.comando_pause import Pausa
 #-------------------------------ANALIZADOR LEXICO---------------------------------------------------------------------
 errores_lexicos = []
 
@@ -22,6 +23,7 @@ palabras_reservadas = {
     'mountlist': 'MOUNT_LIST',
     'unmount' : 'UNMOUNT',
     'mkfs' : 'MKFS',
+    'pause': 'PAUSE',
     'path': 'PATH',
     'size': 'SIZE',
     'unit' : 'UNIT',
@@ -55,8 +57,16 @@ def t_COMMENT(t):
 
 t_IGUAL = r'\='
 t_GUION = r'\-'
-t_2FS = r'2fs'
-t_3FS = r'3fs'
+#t_2FS = r'2fs'
+#t_3FS = r'3fs'
+
+def t_2FS(t):
+    r'2fs'
+    return t
+
+def t_3FS(t):
+    r'3fs'
+    return t
 
 def t_ID_PAR(t):
     r'35[a-zA-z0-9_]+'
@@ -109,7 +119,8 @@ def p_comandos(t):
                 | comando_mount
                 | comando_mountlist
                 | comando_unmount
-                | comando_mkfs'''
+                | comando_mkfs
+                | comando_pause'''
     t[0] = t[1]
 
 def p_empty_production(t):
@@ -286,6 +297,11 @@ def p_parametros_mkfs(t):
                 | param_type
                 | param_fs'''
     t[0] = t[1]
+
+#-------comando pause---------
+def p_comando_pause(t):
+    'comando_pause : PAUSE'
+    t[0] = Pausa()
 
 #------------Parametros------------
 def p_param_size(t):
