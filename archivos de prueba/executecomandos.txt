@@ -1,0 +1,3 @@
+execute -path=/home/rubenralda/escritorio/comandos.adsj
+
+execute -path=/home/rubenralda/escritorio/avanzado.adsj

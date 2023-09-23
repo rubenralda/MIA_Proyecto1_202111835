@@ -1,4 +1,5 @@
 from .estructura_base import EstructuraBase
+from .estructura_bloques import *
 import time
 
 class Inodos(EstructuraBase):
@@ -28,3 +29,55 @@ class Inodos(EstructuraBase):
         self.permiso = int.from_bytes(bytes[28:32], byteorder = 'big')
         for i in range(15):
             self.bloque[i] = int.from_bytes(bytes[32+4*i:36+4*i], byteorder = 'big', signed= True)
+    
+    def restaurar_archivo(self, inicio_bloques, tamano_bloque, archivo_binario):
+        if self.tipo == 0:
+            return None
+        contenido = ""
+        for i in range(12): # apuntadores directos
+            if self.bloque[i] != -1:
+                archivo_binario.seek(inicio_bloques + (self.bloque[i]*tamano_bloque))
+                bloque_restaurado = BloqueArchivos("")
+                bloque_restaurado.set_bytes(archivo_binario)    
+                contenido += bloque_restaurado.contenido
+        return contenido.replace("\0", "")
+    
+    def reporte_inodo(self, id: int):
+        reporte = str(id) + ''' [label="I-nodo                {}
+        Uid                  {}
+        Gid                  {}
+        Size                 {}
+        Fecha de lectura     {}
+        Fecha de creacion    {}
+        Fecha modificacion   {}
+        Tipo                 {}
+        Permiso              {}'''.format(str(id), str(self.uid), str(self.gid), str(self.size),
+                                        time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(self.atime)),
+                                        time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(self.ctime)),
+                                        time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(self.mtime)),
+                                        str(self.tipo), str(self.permiso))
+        for i, bloque in enumerate(self.bloque):
+            reporte += "\nBloque" + str(i) + "             " + str(bloque) + ""
+        reporte += '"]'
+        return reporte
+    
+    def reporte_bloque(self, inicio_bloques: int, tamano_bloque: int, archivo_binario):
+        reporte = ""
+        conexion = ""
+        if self.tipo == 0:
+            for i in range(12):
+                if self.bloque[i] != -1:
+                    archivo_binario.seek(inicio_bloques + (self.bloque[i]*tamano_bloque))
+                    carpeta_restaurada = BloqueCarpetas()
+                    carpeta_restaurada.set_bytes(archivo_binario)
+                    reporte += carpeta_restaurada.reporte_bloque(self.bloque[i])
+                    conexion += " -> " + str(self.bloque[i])
+        else: #tipo archivo
+            for i in range(12):
+                if self.bloque[i] != -1:
+                    archivo_binario.seek(inicio_bloques + (self.bloque[i]*tamano_bloque))
+                    archivo_restaurado = BloqueArchivos("")
+                    archivo_restaurado.set_bytes(archivo_binario)
+                    reporte += archivo_restaurado.reporte_bloque(self.bloque[i])
+                    conexion += " -> " + str(self.bloque[i])
+        return {"reporte" : reporte, "conexion" : conexion}
